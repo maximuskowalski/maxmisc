@@ -9,7 +9,7 @@ Use cron to run script at desired interval, eg minutely.
 `* * * * * /home/max/scripts/wanchors.sh`
 
 ## plex_futures.sh
-Reseets date added to plex to now if item was added as a future date.
+Resets date added to plex to now if item was added as a future date.
 
 ## plex_stuckers.sh
-Reseets date added to plex to airdate or premiere date.
+Resets date added to plex to airdate or premiere date.
