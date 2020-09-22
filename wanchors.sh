@@ -9,11 +9,11 @@ NOTIFICATION="/opt/somescript.sh" # place holder
 
 checker() {
   for VAL in ${ANCHOR//,/ }; do
-    ([ -e "${DIR}"/"${VAL}" ] || thrillkillcult)
+    ([ -e "${DIR}"/"${VAL}" ] || thrillkillkult)
   done
 }
 
-thrillkillcult() {
+thrillkillkult() {
   docker stop ${SAPPS}
 }
 
