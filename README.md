@@ -1,4 +1,5 @@
 # maxmisc
+
 Misc scripts and tools.
 
 ## wanchors.sh
@@ -9,7 +10,11 @@ Use cron to run script at desired interval, eg minutely.
 `* * * * * /home/max/scripts/wanchors.sh`
 
 ## plex_futures.sh
+
 Resets date added to plex to now if item was added as a future date.
+Set DB Path and docker name variables before execution.
 
 ## plex_stuckers.sh
+
 Resets date added to plex to airdate or premiere date.
+Set DB Path and docker name variables before execution.
