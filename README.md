@@ -2,10 +2,10 @@
 
 Misc scripts and tools.
 
-## wanchors.sh
+## wanchors.sh | wanchplus.sh
 
 Watches anchor files. If anchors are missing will shut down docker apps like plex to prevent library being emptied.
-Use cron to run script at desired interval, eg minutely.
+Use cron to run script at desired interval, eg minutely. Use wanchplus.sh to also restart those dockers and the merger.
 
 `* * * * * /home/max/scripts/wanchors.sh`
 
