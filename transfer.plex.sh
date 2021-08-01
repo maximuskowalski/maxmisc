@@ -1,5 +1,5 @@
 #!/bin/bash
-# https://github.com/maximuskowalski/maxmisc
+# https://github.com/maximuskowalski/maxmisc/blob/master/transfer.plex.sh
 
 PLEXNAME=imhotep                                                                                                          # name of your plex server - used in filename
 PLEXDB="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db" # plex DB location

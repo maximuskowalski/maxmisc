@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# https://github.com/maximuskowalski/maxmisc/blob/master/atrain.sh
+# an A-Train installer
+
 set -Eeuo pipefail
 IFS=$'\n\t'
 

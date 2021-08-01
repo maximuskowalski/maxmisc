@@ -1,5 +1,5 @@
 #!/bin/bash
-# https://github.com/maximuskowalski/maxmisc
+# https://github.com/maximuskowalski/maxmisc/blob/master/unpackplex.sh
 
 PLEXNAME=imhotep  # name of your plex server - used in filename
 BKUPDRV=maxbackup # rclone config name of backup share drive, eg 'google'

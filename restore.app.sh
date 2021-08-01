@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# https://github.com/maximuskowalski/maxmisc
+# https://github.com/maximuskowalski/maxmisc/blob/master/restore.app.sh
 
 #________ VARS
 
