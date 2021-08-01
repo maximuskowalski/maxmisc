@@ -1,6 +1,6 @@
 # maxmisc
 
-Misc scripts and tools.
+Misc scripts and tools. Undocumented scripts probably do what I need them to but aren't finished yet.
 
 ## wanchors.sh | wanchplus.sh
 
