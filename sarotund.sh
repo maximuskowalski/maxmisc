@@ -47,7 +47,7 @@ fetching() {
 configo() {
   cat >"${CONFIGUS}" <<EOF
 rclone:
-  rclone_config: "/home/"${USER}"/.config/rclone/rclone.conf"
+  rclone_config: "/home/${USER}/.config/rclone/rclone.conf"
   rc_user: "user"
   rc_pass: "pass"
   sleeptime: 300
