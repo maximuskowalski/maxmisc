@@ -47,21 +47,21 @@ fetching() {
 configo() {
   cat >"${CONFIGUS}" <<EOF
 rclone:
-  rclone_config: "/home/user/.config/rclone/rclone.conf"
+  rclone_config: "/home/"${USER}"/.config/rclone/rclone.conf"
   rc_user: "user"
   rc_pass: "pass"
   sleeptime: 300
 
 remotes:
   '/opt/sa':
-    seedbox-drive: localhost:5623
+    seedbox-drive: localhost:5575
   '/opt/sa2':
-    Movies: localhost:5629
-    Movies-4K: localhost:5629
-    Movies-Danish: localhost:5629
-    TV: localhost:5629
-    TV-4K: localhost:5629
-    TV-Anime: localhost:5629
+    Movies: localhost:5575
+    Movies-4K: localhost:5575
+    Movies-Danish: localhost:5575
+    TV: localhost:5575
+    TV-4K: localhost:5575
+    TV-Anime: localhost:5575
 
 notification:
   errors_only: y
@@ -87,7 +87,7 @@ Group=${USER}
 Type=simple
 WorkingDirectory=${MNTPNT}
 ExecStart=${MNTPNT}/SARotate
-ExecStartPre=/bin/sleep 300
+ExecStartPre=/bin/sleep 30
 Restart=always
 RestartSec=10
 
@@ -95,16 +95,31 @@ RestartSec=10
 WantedBy=default.target
 
 EOF
+
+sudo bash -c 'cat > /etc/systemd/system/sarotate.timer' <<EOF
+# /etc/systemd/system/sarotate.timer
+[Unit]
+Description=sarotate boot delay
+
+[Timer]
+OnBootSec=10min
+
+[Install]
+WantedBy=timers.target
+
+EOF
 }
 
 enabler() {
-    sudo systemctl enable sarotate.service && sudo systemctl daemon-reload
+    sudo systemctl enable sarotate.service && sudo systemctl enable sarotate.timer && sudo systemctl daemon-reload
       echo
       echo
       echo
       echo "    systemd file created and enabled"
-      echo "    after editing and comfirming valid config"
-      echo "    start the SARotate service with"
+      echo "    WARNING: SARotate service will be"
+      echo "    started on the next reboot."
+      echo "    or after editing and comfirming valid config"
+      echo "    to start the system service manually now "
       echo "    sudo systemctl start sarotate.service"
 }
 
@@ -116,6 +131,7 @@ messaging() {
   echo "    a sample configuration is files is located here"
   echo "    ${MNTPNT}/config.yaml.sample"
   echo "    copy and edit or create ${MNTPNT}/config.yaml"
+  echo "    before attempting to start"
   echo
 }
 
