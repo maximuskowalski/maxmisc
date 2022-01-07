@@ -36,7 +36,7 @@ dirmkr() {
 }
 
 fetching() {
-  wget  -c https://github.com/l3uddz/crop/releases/download/v1.0.0/crop_v1.0.0_linux_amd64 -O ${MNTPNT}/crop
+  wget  -c https://github.com/l3uddz/crop/releases/download/v1.0.1/crop_v1.0.1_linux_amd64 -O ${MNTPNT}/crop
   chmod +x ${MNTPNT}/crop
   wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/lclone -O ${MNTPNT}/lclone
   chmod +x ${MNTPNT}/lclone
