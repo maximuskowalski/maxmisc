@@ -1,14 +1,21 @@
 #!/bin/bash
 # https://github.com/maximuskowalski/maxmisc/blob/master/transfer.plex.sh
 
-PLEXNAME=imhotep                                                                                                          # name of your plex server - used in filename
-PLEXDB="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db" # plex DB location
-PLEMMD="/opt/plex/Library/Application Support/Plex Media Server/Metadata"                                                 # metadata location
-BKUPDIR=/home/"${USER}"/appbackups                                                                                        # local backup dir
+BKUPDRV=backup        # rclone config name of backup share drive, eg 'google'
+
+THEDOCKER=plex        # name of your plex docker
+
+PLEXNAME=imhotep      # name of your plex server - used in filename
+SRVR=hetzner01        # name of your server, eg hetzner01
+
+BKUPDIR=/home/"${USER}"/appbackups    # local backup dir
+
+# plex DB and metadata location, absolute paths
+PLEXDB="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
+PLEMMD="/opt/plex/Library/Application Support/Plex Media Server/Metadata"
+
 BKUPDB="${BKUPDIR}/com.plexapp.plugins.library.db.trnsfrbkup"
-BKUPDRV=backup                                                                                                            # rclone config name of destination share drive, eg 'google'
-SRVR=mk700                                                                                                                # name of your server, eg hetzner01
-THEDOCKER=plex                                                                                                            # name of your plex docker
+
 
 #______________
 
