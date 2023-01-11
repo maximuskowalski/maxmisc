@@ -1,0 +1,56 @@
+# an explicit list of files to backup
+# no wildcards
+
+# SALTBOX
+/srv/git/saltbox/ansible.cfg
+/srv/git/saltbox/inventories/host_vars/localhost.yml
+/opt/sandbox/settings.yml
+
+# HOME DIR
+/home/max/.config/rclone/rclone.conf
+/home/max/.config/plexapi/config.yml
+/home/max/.bashrc
+/home/max/.bash_history
+/home/max/.bash_profile
+/home/max/.zshrc
+/home/max/.zshrc-personal
+/home/max/.zsh_history
+/home/max/my-crontab
+/home/max/.gitconfig
+/home/max/.profile
+/home/max/.ssh/authorized_keys
+
+# ETC
+/etc/security/limits.conf
+/etc/sysctl.conf
+/etc/rc.local
+/etc/ssh/sshd_config
+/etc/hosts
+/etc/hostname
+/etc/fstab
+/etc/netplan/00-installer-config.yaml
+
+# OPT
+/opt/atrain/data/a-train.toml
+/opt/a-train/a-train.toml
+/opt/a-train/account.json
+/opt/authelia/configuration.yml
+/opt/authelia/users_database.yml
+/opt/autoscan/config.yml
+/opt/cloudplow/config.json
+/opt/crop/config.yaml
+/opt/crossseed/config/config.js
+/opt/jackett/ServerConfig.json
+/opt/motd/config.json
+/opt/notifiarr/notifiarr.conf
+/opt/nzbget/nzbget.conf
+/opt/nzbhydra2/nzbhydra.yml
+/opt/plex/Library/Application Support/Plex Media Server/Preferences.xml
+/opt/prowlarr/config.xml
+/opt/qbit_manage/config.yml
+/opt/qbittorrent/qBittorrent/qBittorrent.conf
+/opt/qbittorrent/qBittorrent/watched_folders.json
+/opt/telegraf/telegraf.conf
+
+# MISC
+/installimage.conf

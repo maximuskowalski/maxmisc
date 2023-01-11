@@ -1,0 +1,6 @@
+# an explicit list of directories
+# to be zipped before backing up
+# no wildcards
+#
+/opt/scripts
+/opt/sa

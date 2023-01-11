@@ -1,0 +1,55 @@
+# A list of filters to match
+
+# SALTBOX
++ /srv/
++ /srv/git/
++ /srv/git/saltbox/
++ /srv/git/saltbox/*.yml
+
++ # HOME DIR
++ /home/
++ /home/max/
++ /home/max/*.sh
++ /home/max/scripts/
++ /home/max/scripts/*.sh
++ /home/max/.ssh/
++ /home/max/.ssh/**
+
+# SYSTEMD
++ /etc/
++ /etc/systemd/
++ /etc/systemd/system/
++ /etc/systemd/system/*.service
++ /etc/systemd/system/*.timer
+
+# OPT
++ /opt/
++ /opt/authelia/
++ /opt/authelia/*.yml
++ /opt/crop/
++ /opt/crop/*.conf
++ /opt/emby/
++ /opt/emby/config/
++ /opt/emby/config/*.xml
++ /opt/jellyfin/
++ /opt/jellyfin/*.xml
++ /opt/prowlarr/
++ /opt/prowlarr/Definitions/
++ /opt/prowlarr/Definitions/Custom/
++ /opt/prowlarr/Definitions/Custom/*.yml
++ /opt/radarr*/
++ /opt/radarr*/config.xml
++ /opt/readarr*/
++ /opt/readarr*/config.xml
++ /opt/sonarr*/
++ /opt/sonarr*/config.xml
++ /opt/tautulli*/
++ /opt/tautulli*/config.ini
+
+# SOME FULL DIRS
++ /opt/systemd-backup/
++ /opt/systemd-backup/**
++ /opt/crontab-backup/
++ /opt/crontab-backup/**
+
+- *
