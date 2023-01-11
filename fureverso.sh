@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # https://github.com/maximuskowalski/maxmisc/blob/master/fureverso.sh
-# an incremental small config files backerupperer
+# an incremental small config files backerupperer for
+# your little fu's.
 
 #________ NOTES
 
 # USE FUNCTIONS WE MAY HAVE SOME TRUE FALSE switches
 # USE .conf for VARS?
-# . /opt/scripts/maxmisc/reverso.conf
+# . /opt/scripts/maxmisc/fureverso.conf
 # And for a list of files to backup
 # copy sample file to same dir
 # filelist.txt
@@ -19,7 +20,7 @@ FILESLIST=filelist.txt
 FILTLIST=filtlist.txt
 ZIPLIST=ziplist.txt
 
-BKUPDIR=/home/"${USER}"/reverso
+BKUPDIR=/home/"${USER}"/fureverso
 
 # SUBSET
 TMPDIR="${BKUPDIR}"/files
