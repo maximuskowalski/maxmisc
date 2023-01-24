@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 
-PLEXDOCKER=plex
-PLEXDBPATH="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/"
-PLEXDB="com.plexapp.plugins.library.db"
-PLEXSQL="/opt/plexsql/Plex Media Server"
+source "$(dirname "$0")/maxmisc.conf"
 
-TODAY=$(date '+%Y_%d_%m__%H_%M_%S')
+# plexdockername=plex
+# plexdbpath="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/"
+# plexdb="com.plexapp.plugins.library.db"
+# plexsql="/opt/plexsql/Plex Media Server"
 
-docker stop "${PLEXDOCKER}"
-cd "${PLEXDBPATH}" || return
+# today=$(date '+%Y_%d_%m__%H_%M_%S')
 
-cp "${PLEXDB}" "${PLEXDB}_${TODAY}.bak"
+docker stop "${plexdockername}"
+cd "${plexdbpath}" || return
 
-"${PLEXSQL}" --sqlite "${PLEXDB}" <<END_SQL
+cp "${plexdb}" "${plexdb}_${today}.bak"
+
+"${plexsql}" --sqlite "${plexdb}" <<END_SQL
 .timeout 2000
 UPDATE metadata_items SET added_at = DATETIME('now') WHERE DATETIME(added_at) > DATETIME('now');
 UPDATE metadata_items SET added_at = originally_available_at WHERE added_at <> originally_available_at AND originally_available_at IS NOT NULL;
 END_SQL
-docker start "${PLEXDOCKER}"
+docker start "${plexdockername}"
 #eof

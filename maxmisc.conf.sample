@@ -1,0 +1,169 @@
+########################################
+######## CONFIG FILE FOR maxmisc scripts
+########################################
+
+# TODO convert all to lower case, uniquify certain vars that may clash, source these vars within scripts
+
+########################
+# UNIVERSAL SECTION
+########################
+
+thisserver=maxical                    # name of this server, eg hetzner01049
+myusername=max                        # your user name on this server, eg rimjobsteve
+appdir=/opt                           # parent dir of your apps and app data
+network=saltbox                       # docker network
+backupdrive=mybackups                 # rclone config name of backup share drive, eg 'google'
+                                      # - used for backups and transfers
+
+# these are auto config, you probably don't need to edit
+
+bkupdir=/home/"${myusername}"/appbackups
+today=$(date '+%Y_%d_%m__%H_%M_%S')
+logsdir=/home/"${myusername}"/logs    # directory for logs
+
+########################
+# PLEX RELATED
+########################
+
+#________for pleanse
+
+plexdir=/opt/plex
+
+#________for plex_futures
+#________for plex_stuckers
+#________for plex_futures_n_stuckers
+
+plexdockername=plex
+plexdbpath="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/"
+plexdb="com.plexapp.plugins.library.db"
+plexsql="/opt/plexsql/Plex Media Server"
+
+#________for plex_transfer
+#________for plex_unpack
+
+pmspath="/opt/plex/Library/Application Support/Plex Media Server/"
+
+
+# plex DB and metadata location, absolute paths
+# these are auto config, you probably don't need to edit
+
+plexdblocation="${plexdbpath}${plexdb}"
+plexmdlocation="${pmspath}Metadata"
+plextrnsfrdb="${bkupdir}/${plexdb}.trnsfrbkup"
+
+#________for plex_transfer only
+plexservername=imhotep        # name of your plex server - used in filename creation
+
+#________for plex_unpack only
+plexbuservername=imhotep      # name of your plex server to restore FROM- used in filename
+bufromserver=hetzner01        # name of your server to restore FROM, eg hetzner01
+
+
+########################
+# APP INSTALLERS
+########################
+
+#________ATRAIN
+
+APP=atrain
+
+#CHANGETHIS
+APPDIR=/opt
+#CHANGETHIS
+NETWORK=saltbox
+
+#________CROPDUSTER
+
+#CHANGETHIS
+APP=crop
+#CHANGETHIS
+APPDIR=/opt
+
+#________SA ROTUND
+
+APP=sarotate
+APPDIR=/opt
+SYSDINST=true # creates systemd file and enables but does not start
+
+#________SA ROTUP
+
+APP=sarotate
+APPDIR=/opt
+
+
+########################
+# GENERAL UTILITIES
+########################
+
+#________FU REVERSO
+
+#CHANGETHIS
+FILESLIST=filelist.txt
+#CHANGETHIS
+FILTLIST=filtlist.txt
+#CHANGETHIS
+ZIPLIST=ziplist.txt
+#CHANGETHIS
+BKUPDIR=/home/"${USER}"/fureverso
+
+#________SPORTSORT
+
+# Set the source and destination directories
+src_dir="/mnt/local/downloads/nzbget/completed/TV_Sport"
+dst_dir="/mnt/sharedrives/checo_tv2/Sport"
+
+#________STRAPON
+
+# LEAVE OUT FOR NOW
+
+########
+#________WANCHORS
+
+ANCHOR=td_tv1.bin,td_movies.bin   # anchor files, use commas
+DIR="/mnt/unionfs"                # location of anchor files
+SAPPS="plex emby jellyfin"        # docker service apps, separate with spaces.
+NOTIFICATION="/opt/somescript.sh" # place holder
+
+#________WANCH PLUS
+
+ANCHOR=audiobooks,td_tv2.bin                          # anchors, use commas (a directory is also a file)
+DIR="/mnt/unionfs"                                    # location of anchor files
+SAPPS="plex emby emby2 plexhex jellyfin calibre"      # docker service apps, separate with spaces.
+SYSAPPS="mergerfs munter"                             # system services, separate with spaces.
+WANCHLOG="/home/max/logs/wanch.log"                   # logfile
+
+
+########################
+# APP TRANSFER or BACKUP
+########################
+
+#________BackupAPP
+
+
+#CHANGETHIS
+APPNAME=plex                       # name of your app - used in filename
+#CHANGETHIS
+PARENTDIR="/opt"                   # Parent dir in which backup dir is nested (docker appdata)
+#CHANGETHIS
+APPDIR="plex"                      # appdir to backup
+#CHANGETHIS
+BKUPDIR=/home/"${USER}"/appbackups # local backup dir
+#CHANGETHIS
+BKUPDRV=maxbackup                  # rclone config name of destination share drive, eg 'google'
+#CHANGETHIS
+SRVR=maxical                       # name of your server, eg hetzner01 - used in filename
+#CHANGETHIS
+THEDOCKER=plex                     # name of your app docker - to stop and start
+
+#________RESTORE APP
+
+PARENTDIR="/opt"          # Parent dir in which backup dir is nested (docker appdata)
+APPDIR="plex"             # appdir to backup
+RESTOREDIR=~/apprestore   # local dir to save tar for restore
+BKUPDRV=maxbackup         # rclone config name of destination share drive, eg 'google'
+FILEPATH=/backups/maxical # Path on rclone remote to the file
+FILENAME=appname.tar.gz   # Name of file to restore
+THEDOCKER=plex            # name of your app docker - to stop and start
+
+
+

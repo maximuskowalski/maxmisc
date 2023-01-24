@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # # https://github.com/maximuskowalski/maxmisc/blob/master/backup.app.sh
 
+source "$(dirname "$0")/maxmisc.conf"
+
 APPNAME=plex                       # name of your app - used in filename
 PARENTDIR="/opt"                   # Parent dir in which backup dir is nested (docker appdata)
 APPDIR="plex"                      # appdir to backup

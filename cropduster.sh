@@ -10,6 +10,7 @@ IFS=$'\n\t'
 # config... too hard for now
 
 #________ VARS
+source "$(dirname "$0")/maxmisc.conf"
 
 APP=crop
 APPDIR=/opt

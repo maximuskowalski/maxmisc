@@ -12,6 +12,8 @@ IFS=$'\n\t'
 
 #________ VARS
 
+source "$(dirname "$0")/maxmisc.conf"
+
 APP=sarotate
 APPDIR=/opt
 SYSDINST=true # creates systemd file and enables but does not start

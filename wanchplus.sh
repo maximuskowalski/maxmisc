@@ -1,7 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # A script to watch for rclone mount anchors and stop muh dockers and then restart a service like mergerfs.
 
 # VARIABLES
+
+source "$(dirname "$0")/maxmisc.conf"
+
 ANCHOR=audiobooks,td_tv2.bin                          # anchors, use commas (a directory is also a file)
 DIR="/mnt/unionfs"                                    # location of anchor files
 SAPPS="plex emby emby2 plexhex jellyfin calibre"      # docker service apps, separate with spaces.

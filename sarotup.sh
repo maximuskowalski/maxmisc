@@ -15,6 +15,8 @@ set -Eeuo pipefail
 
 #________ VARS
 
+source "$(dirname "$0")/maxmisc.conf"
+
 APP=sarotate
 APPDIR=/opt
 

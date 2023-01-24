@@ -7,6 +7,8 @@ IFS=$'\n\t'
 
 #________ VARS
 
+source "$(dirname "$0")/maxmisc.conf"
+
 APP=atrain
 APPDIR=/opt
 NETWORK=saltbox

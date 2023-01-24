@@ -3,6 +3,8 @@
 
 #________ VARS
 
+source "$(dirname "$0")/maxmisc.conf"
+
 PARENTDIR="/opt"          # Parent dir in which backup dir is nested (docker appdata)
 APPDIR="plex"             # appdir to backup
 RESTOREDIR=~/apprestore   # local dir to save tar for restore

@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-# https://github.com/maximuskowalski/maxmisc/blob/master/fureverso.sh
+# https://github.com/maximuskowalski/maxmisc/blob/master/quack.sh
+
+# RIP discduck
+
 # an incremental small config files backerupperer for
-# your little fu's.
+# your little fu's. After learning of the death of "disco"duck I might rename this quack
+# quack is a quick back up of config files and scripts from my saltbox installs.
+# it is not a saltbox backup by any means.
 
 #________ NOTES
 
@@ -16,11 +21,13 @@
 
 #________ VARS ( MAY GO TO CONFIG FILE ( REPO WIDE))
 
+source "$(dirname "$0")/maxmisc.conf"
+
 FILESLIST=filelist.txt
 FILTLIST=filtlist.txt
 ZIPLIST=ziplist.txt
 
-BKUPDIR=/home/"${USER}"/fureverso
+BKUPDIR=/home/"${USER}"/quack
 
 # SUBSET
 TMPDIR="${BKUPDIR}"/files
@@ -198,7 +205,7 @@ installutils() {
 
 # uploader ( might want a switch for this )
 uploader() {
-    (("${UPLOAD}" == TRUE)) && rclone copy -vP "${BAKDIR}"/ "${BKUPDRV}":/backups/${SRVR}/fureverso/ --drive-chunk-size=2048M --buffer-size 8192M || return
+    (("${UPLOAD}" == TRUE)) && rclone copy -vP "${BAKDIR}"/ "${BKUPDRV}":/backups/${SRVR}/quack/ --drive-chunk-size=2048M --buffer-size 8192M || return
 }
 
 # finish notification
