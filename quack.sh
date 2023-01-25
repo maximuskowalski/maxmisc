@@ -10,7 +10,7 @@
 
 #________ NOTES
 
-# USE FUNCTIONS WE MAY HAVE SOME TRUE FALSE switches
+# USE FUNCTIONS WE MAY HAVE SOME true FALSE switches
 # USE .conf for VARS?
 # . /opt/scripts/maxmisc/fureverso.conf
 # And for a list of files to backup
@@ -23,28 +23,28 @@
 
 source "$(dirname "$0")/maxmisc.conf"
 
-FILESLIST=filelist.txt
-FILTLIST=filtlist.txt
-ZIPLIST=ziplist.txt
+# fileslist=filelist.txt
+# filtlist=filtlist.txt
+# ziplist=ziplist.txt
 
-BKUPDIR=/home/"${USER}"/quack
+# qkupdir=/home/"${myusername}"/quack
 
 # SUBSET
-TMPDIR="${BKUPDIR}"/files
-ZIPSDIR="${BKUPDIR}"/zips
-BAKDIR="${BKUPDIR}"/backups
-INFDIR="${BKUPDIR}"/info
+# qaktmpdir="${qkupdir}"/files
+# qakzipsdir="${qkupdir}"/zips
+# qakbakdir="${qkupdir}"/backups
+# qakinfdir="${qkupdir}"/info
 
-FIRSTRUN="${INFDIR}"/firstrun.txt
+# qakfirstrun="${qakinfdir}"/quack.txt
 
-TODAY=$(date '+%Y_%d_%m__%H_%M_%S')
-BAKFILE="${BAKDIR}"/config_backup"${TODAY}".zip
+# today=$(date '+%Y_%d_%m__%H_%M_%S')
+# qakbakfile="${qakbakdir}"/config_backup"${today}".zip
 
 # UPLOADER
-UPLOAD=TRUE
-BKUPDRV=maxbackup
-SRVR=maxical
-RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M"
+# qakupload=true
+# backupdrive=maxbackup
+# thisserver=maxical
+# RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M"
 
 #________ ACTIONS
 
@@ -53,27 +53,27 @@ RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M"
 # neofetch should be config for plain text output
 
 tempactions() {
-    crontab -l >"${TMPDIR}"/mycron
-    uname -a >"${TMPDIR}"/system.txt
-    neofetch >"${TMPDIR}"/neofetch.txt
-    echo '' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo 'lshw info' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    sudo lshw -short >>"${TMPDIR}"/system.txt
-    echo '' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo 'lsblk info' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    lsblk >>"${TMPDIR}"/system.txt
-    echo '' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    echo 'df info' >>"${TMPDIR}"/system.txt
-    echo '################' >>"${TMPDIR}"/system.txt
-    df -h >>"${TMPDIR}"/system.txt
+    crontab -l >"${qaktmpdir}"/mycron
+    uname -a >"${qaktmpdir}"/system.txt
+    neofetch >"${qaktmpdir}"/neofetch.txt
+    echo '' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo 'lshw info' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    sudo lshw -short >>"${qaktmpdir}"/system.txt
+    echo '' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo 'lsblk info' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    lsblk >>"${qaktmpdir}"/system.txt
+    echo '' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    echo 'df info' >>"${qaktmpdir}"/system.txt
+    echo '################' >>"${qaktmpdir}"/system.txt
+    df -h >>"${qaktmpdir}"/system.txt
 }
 
 #________ FUNCTIONS
@@ -88,24 +88,24 @@ rooter() {
 
 # check for existence
 checkoff() {
-    ([ -d "${BKUPDIR}" ] || dirmaker)
-    ([ -e "${FIRSTRUN}" ] || setup)
+    ([ -d "${qkupdir}" ] || dirmaker)
+    ([ -e "${qakfirstrun}" ] || setup)
     # check for zip / neofetch installs?
 }
 
 # make our destination dirs
 dirmaker() {
-    # mkdir -p "${BKUPDIR}" && sudo chown "${USER}":"${USER}" "${BKUPDIR}"
-    mkdir -p {"${BKUPDIR}","${TMPDIR}","${ZIPSDIR}","${BAKDIR}","${INFDIR}"} && sudo chown "${USER}":"${USER}" {"${BKUPDIR}","${TMPDIR}","${ZIPSDIR}","${BAKDIR}","${INFDIR}"}
+    # mkdir -p "${qkupdir}" && sudo chown "${myusername}":"${myusername}" "${qkupdir}"
+    mkdir -p {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"} && sudo chown "${myusername}":"${myusername}" {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"}
 
 }
 
-# make copies of files in "${FILESLIST}" or "${FILTLIST}"
+# make copies of files in "${fileslist}" or "${filtlist}"
 # USE check for existence first
 
 arrsinker() {
-    ([ -e "${FILESLIST}" ] && filesinker)
-    ([ -e "${FILTLIST}" ] && filtsinker)
+    ([ -e "${fileslist}" ] && filesinker)
+    ([ -e "${filtlist}" ] && filtsinker)
     ([ -e "${COPYLIST}" ] && cpsinker)
     # --prune-empty-dirs ( -m )
     # -n ( for dry run )
@@ -113,17 +113,17 @@ arrsinker() {
 }
 
 filesinker() {
-    rsync -a --prune-empty-dirs --files-from="${FILESLIST}" / "${TMPDIR}" >/dev/null 2>&1
+    rsync -a --prune-empty-dirs --files-from="${fileslist}" / "${qaktmpdir}" >/dev/null 2>&1
 
 }
 
 filtsinker() {
-    rsync -a --prune-empty-dirs --include-from="${FILTLIST}" / "${TMPDIR}" >/dev/null 2>&1
+    rsync -a --prune-empty-dirs --include-from="${filtlist}" / "${qaktmpdir}" >/dev/null 2>&1
 }
 
 # test using `cp` instead of rsync, should only copy new / changed files
 cpsinker() {
-    while read -r file; do cp --parents --update "$file" "${BAKDIR}"; done <"${FILESLIST}" >/dev/null 2>&1
+    while read -r file; do cp --parents --update "$file" "${qakbakdir}"; done <"${fileslist}" >/dev/null 2>&1
     # cp --parents --update -r test/1/.moo test2/
     # some loop that will do above
 }
@@ -133,7 +133,7 @@ cpsinker() {
 
 # list of directories to be zipped instead of copied
 dirzip() {
-    ([ -e "${ZIPLIST}" ] || echo "Error: Input file does not exist.")
+    ([ -e "${ziplist}" ] || echo "Error: Input file does not exist.")
 
     # iterate over each line in the input file
     while IFS= read -r line; do
@@ -143,20 +143,20 @@ dirzip() {
             cd "$line" || return
 
             # zip all files in the directory
-            zip -r "${ZIPSDIR}"/"${line//\//_}.zip" ./* >/dev/null 2>&1
+            zip -r "${qakzipsdir}"/"${line//\//_}.zip" ./* >/dev/null 2>&1
 
             # navigate back to the previous directory
             cd - >/dev/null || return
         else
             echo "..."
         fi
-    done <"${ZIPLIST}"
+    done <"${ziplist}"
 
 }
 
 zipper() {
-    cd "${BKUPDIR}" || return
-    zip -r "${BAKFILE}" files/* zips/* >/dev/null 2>&1
+    cd "${qkupdir}" || return
+    zip -r "${qakbakfile}" files/* zips/* >/dev/null 2>&1
 }
 
 # logrotator should be in place already?
@@ -171,30 +171,30 @@ setup() {
 
 # test in-script rotator instead of logrotate
 alternator() {
-    ls -1t "${BAKDIR}"/*.zip | tail -n +8 | xargs rm >/dev/null 2>&1
-    # ls -1t "${BAKDIR}"/*.zip | tail -n +6 | xargs rm
-    # find "${BAKDIR}"/*.zip -mtime +10 -delete #all files more than X (10) days old
+    ls -1t "${qakbakdir}"/*.zip | tail -n +8 | xargs rm >/dev/null 2>&1
+    # ls -1t "${qakbakdir}"/*.zip | tail -n +6 | xargs rm
+    # find "${qakbakdir}"/*.zip -mtime +10 -delete #all files more than X (10) days old
 }
 
 # current file uses dates - change back if using logrotate
 rotatormator() {
 
-    sudo bash -c 'cat > /etc/logrotate.d/reverso' <<EOF
-    "${BAKFILE}" {
+    sudo bash -c 'cat > /etc/logrotate.d/quack' <<EOF
+    "${qakbakfile}" {
         dateext
         rotate 35
         nocompress
         missingok
         notifempty
         extension .zip
-        su ${USER} ${USER}
+        su ${myusername} ${myusername}
     }
 EOF
 
 }
 
 firstfile() {
-    echo "${TODAY}" >"${FIRSTRUN}"
+    echo "${today}" >"${qakfirstrun}"
 }
 
 installutils() {
@@ -205,7 +205,7 @@ installutils() {
 
 # uploader ( might want a switch for this )
 uploader() {
-    (("${UPLOAD}" == TRUE)) && rclone copy -vP "${BAKDIR}"/ "${BKUPDRV}":/backups/${SRVR}/quack/ --drive-chunk-size=2048M --buffer-size 8192M || return
+    (("${qakupload}" == true)) && rclone copy -vP "${qakbakdir}"/ "${backupdrive}":/backups/${thisserver}/quack/ --drive-chunk-size=2048M --buffer-size 8192M || return
 }
 
 # finish notification

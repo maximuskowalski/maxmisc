@@ -14,15 +14,17 @@ IFS=$'\n\t'
 
 source "$(dirname "$0")/maxmisc.conf"
 
-APP=sarotate
-APPDIR=/opt
-SYSDINST=true # creates systemd file and enables but does not start
+# sarotatename=sarotate
+# appdir=/opt
+# sarsysdinst=true # creates systemd file and enables but does not start
 
 #________ DONT CHANGE
 
-MNTPNT=${APPDIR}/${APP}
-CRNTVERS=https://github.com/saltydk/SARotate/releases/download/v1.0.1/SARotate
-CONFIGUS="${MNTPNT}/config.yaml.sample"
+# sarotatemntpnt=${appdir}/${sarotatename}
+
+# sarotateconfig="${sarotatemntpnt}/config.yaml.sample"
+
+# sarlink="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
 
 #________ FUNCTIONS
 
@@ -34,20 +36,20 @@ rooter() {
 }
 
 checkoff() {
-  ([ -d "${MNTPNT}" ] || dirmkr)
+  ([ -d "${sarotatemntpnt}" ] || dirmkr)
 }
 
 dirmkr() {
-  sudo mkdir -p "${MNTPNT}" && sudo chown "${USER}":"${USER}" "${MNTPNT}"
+  sudo mkdir -p "${sarotatemntpnt}" && sudo chown "${USER}":"${USER}" "${sarotatemntpnt}"
 }
 
 fetching() {
-  wget -c "${CRNTVERS}" -O ${MNTPNT}/SARotate
-  chmod +x ${MNTPNT}/SARotate
+  wget -c "${sarlink}" -O ${sarotatemntpnt}/SARotate
+  chmod +x ${sarotatemntpnt}/SARotate
 }
 
 configo() {
-  cat >"${CONFIGUS}" <<EOF
+  cat >"${sarotateconfig}" <<EOF
 rclone:
   rclone_config: "/home/${USER}/.config/rclone/rclone.conf"
   rc_user: "user"
@@ -73,7 +75,7 @@ EOF
 }
 
 sysdcheck() {
-    ([ $SYSDINST = true ] && sysdmaker && enabler) || :
+    ([ $sarsysdinst = true ] && sysdmaker && enabler) || :
 }
 
 sysdmaker() {
@@ -87,8 +89,8 @@ After=network-online.target
 User=${USER}
 Group=${USER}
 Type=simple
-WorkingDirectory=${MNTPNT}
-ExecStart=${MNTPNT}/SARotate
+WorkingDirectory=${sarotatemntpnt}
+ExecStart=${sarotatemntpnt}/SARotate
 ExecStartPre=/bin/sleep 30
 Restart=always
 RestartSec=10
@@ -131,8 +133,8 @@ messaging() {
   echo "    https://github.com/saltydk/SARotate"
   echo
   echo "    a sample configuration is files is located here"
-  echo "    ${MNTPNT}/config.yaml.sample"
-  echo "    copy and edit or create ${MNTPNT}/config.yaml"
+  echo "    ${sarotatemntpnt}/config.yaml.sample"
+  echo "    copy and edit or create ${sarotatemntpnt}/config.yaml"
   echo "    before attempting to start"
   echo
 }

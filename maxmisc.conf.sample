@@ -21,25 +21,36 @@ bkupdir=/home/"${myusername}"/appbackups
 today=$(date '+%Y_%d_%m__%H_%M_%S')
 logsdir=/home/"${myusername}"/logs    # directory for logs
 
+# some colours
+
+BRED="$(tput setaf 9)"   # bright red
+YELLOW="$(tput setaf 3)" # yellow
+RESET="$(tput sgr0)"     # reset
+
+bred="$(tput setaf 9)"   # bright red
+yellow="$(tput setaf 3)" # yellow
+reset="$(tput sgr0)"     # reset
+
+
 ########################
 # PLEX RELATED
 ########################
 
-#________for pleanse
+#________for pleanse.sh
 
 plexdir=/opt/plex
 
-#________for plex_futures
-#________for plex_stuckers
-#________for plex_futures_n_stuckers
+#________for plex_futures.sh
+#________for plex_stuckers.sh
+#________for plex_futures_n_stuckers.sh
 
 plexdockername=plex
 plexdbpath="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/"
 plexdb="com.plexapp.plugins.library.db"
 plexsql="/opt/plexsql/Plex Media Server"
 
-#________for plex_transfer
-#________for plex_unpack
+#________for plex_transfer.sh
+#________for plex_unpack.sh
 
 pmspath="/opt/plex/Library/Application Support/Plex Media Server/"
 
@@ -51,10 +62,10 @@ plexdblocation="${plexdbpath}${plexdb}"
 plexmdlocation="${pmspath}Metadata"
 plextrnsfrdb="${bkupdir}/${plexdb}.trnsfrbkup"
 
-#________for plex_transfer only
+#________for plex_transfer.sh only
 plexservername=imhotep        # name of your plex server - used in filename creation
 
-#________for plex_unpack only
+#________for plex_unpack.sh only
 plexbuservername=imhotep      # name of your plex server to restore FROM- used in filename
 bufromserver=hetzner01        # name of your server to restore FROM, eg hetzner01
 
@@ -63,68 +74,81 @@ bufromserver=hetzner01        # name of your server to restore FROM, eg hetzner0
 # APP INSTALLERS
 ########################
 
-#________ATRAIN
+#________for atrain.sh
 
-APP=atrain
+atrainname=atrain
+atrainimagetag=latest
 
-#CHANGETHIS
-APPDIR=/opt
-#CHANGETHIS
-NETWORK=saltbox
+# these are auto config, you probably don't need to edit
+atrainmntpnt=${appdir}/${atrainname}
+atrainconfig="${atrainmntpnt}/a-train.toml"
 
-#________CROPDUSTER
+#________for cropduster.sh
 
-#CHANGETHIS
-APP=crop
-#CHANGETHIS
-APPDIR=/opt
+cropname=crop
 
-#________SA ROTUND
+# auto config, you probably don't need to edit
+cropmntpnt=${appdir}/${cropname}
 
-APP=sarotate
-APPDIR=/opt
-SYSDINST=true # creates systemd file and enables but does not start
+#________for sarotund.sh
+#________for sarotup.sh
 
-#________SA ROTUP
+sarotatename=sarotate
+sarsysdinst=true # creates systemd file and enables but does not start
 
-APP=sarotate
-APPDIR=/opt
+# these are auto config, you probably don't need to edit
+
+sarotatemntpnt=${appdir}/${sarotatename}
+sarotateconfig="${sarotatemntpnt}/config.yaml.sample"
+sarlink="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
+sarappfile="${sarotatemntpnt}/SARotate"
 
 
 ########################
 # GENERAL UTILITIES
 ########################
 
-#________FU REVERSO
+#________for quack.sh
 
-#CHANGETHIS
-FILESLIST=filelist.txt
-#CHANGETHIS
-FILTLIST=filtlist.txt
-#CHANGETHIS
-ZIPLIST=ziplist.txt
-#CHANGETHIS
-BKUPDIR=/home/"${USER}"/fureverso
+fileslist=filelist.txt
+filtlist=filtlist.txt
+ziplist=ziplist.txt
 
-#________SPORTSORT
+# UPLOADER
+qakupload=true
+
+# these are auto config, you probably don't need to edit
+
+qkupdir=${bkupdir}/quack
+# SUBSET
+qaktmpdir="${qkupdir}"/files
+qakzipsdir="${qkupdir}"/zips
+qakbakdir="${qkupdir}"/backups
+qakinfdir="${qkupdir}"/info
+qakfirstrun="${qakinfdir}"/quack.txt
+qakbakfile="${BAKDIR}"/config_backup"${TODAY}".zip
+
+# RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M" # THIS IS NOT USED / NOT WORKING
+
+#________for SPORTSORT.sh
 
 # Set the source and destination directories
 src_dir="/mnt/local/downloads/nzbget/completed/TV_Sport"
 dst_dir="/mnt/sharedrives/checo_tv2/Sport"
 
-#________STRAPON
+#________for STRAPON.sh
 
 # LEAVE OUT FOR NOW
 
 ########
-#________WANCHORS
+#________for WANCHORS.sh
 
 ANCHOR=td_tv1.bin,td_movies.bin   # anchor files, use commas
 DIR="/mnt/unionfs"                # location of anchor files
 SAPPS="plex emby jellyfin"        # docker service apps, separate with spaces.
 NOTIFICATION="/opt/somescript.sh" # place holder
 
-#________WANCH PLUS
+#________for WANCH PLUS.sh
 
 ANCHOR=audiobooks,td_tv2.bin                          # anchors, use commas (a directory is also a file)
 DIR="/mnt/unionfs"                                    # location of anchor files
@@ -137,7 +161,7 @@ WANCHLOG="/home/max/logs/wanch.log"                   # logfile
 # APP TRANSFER or BACKUP
 ########################
 
-#________BackupAPP
+#________for BackupAPP.sh
 
 
 #CHANGETHIS
@@ -155,7 +179,7 @@ SRVR=maxical                       # name of your server, eg hetzner01 - used in
 #CHANGETHIS
 THEDOCKER=plex                     # name of your app docker - to stop and start
 
-#________RESTORE APP
+#________for RESTORE APP.sh
 
 PARENTDIR="/opt"          # Parent dir in which backup dir is nested (docker appdata)
 APPDIR="plex"             # appdir to backup

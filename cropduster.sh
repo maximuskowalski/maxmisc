@@ -12,36 +12,36 @@ IFS=$'\n\t'
 #________ VARS
 source "$(dirname "$0")/maxmisc.conf"
 
-APP=crop
-APPDIR=/opt
+# cropname=crop
+# appdir=/opt
 
 #________ DONT CHANGE
 
-MNTPNT=${APPDIR}/${APP}
+# cropmntpnt=${appdir}/${cropname}
 
 #________ FUNCTIONS
 
 rooter() {
     if [ "$(whoami)" = root ]; then
-        echo "${BRED} Running as root or with sudo is not supported. Exiting.${RESET}"
+        echo " Running as root or with sudo is not supported. Exiting."
         exit
     fi
 }
 
 checkoff() {
-  ([ -d "${MNTPNT}" ] || dirmkr)
+  ([ -d "${cropmntpnt}" ] || dirmkr)
 }
 
 dirmkr() {
-  sudo mkdir -p "${MNTPNT}" && sudo chown "${USER}":"${USER}" "${MNTPNT}"
+  sudo mkdir -p "${cropmntpnt}" && sudo chown "${USER}":"${USER}" "${cropmntpnt}"
 }
 
 fetching() {
-  wget  -c https://github.com/l3uddz/crop/releases/download/v1.0.1/crop_v1.0.1_linux_amd64 -O ${MNTPNT}/crop
-  chmod +x ${MNTPNT}/crop
-  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/lclone -O ${MNTPNT}/lclone
-  chmod +x ${MNTPNT}/lclone
-  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/crop_config_sample.yml -O ${MNTPNT}/config.yaml.sample
+  wget  -c https://github.com/l3uddz/crop/releases/download/v1.0.1/crop_v1.0.1_linux_amd64 -O ${cropmntpnt}/crop
+  chmod +x ${cropmntpnt}/crop
+  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/lclone -O ${cropmntpnt}/lclone
+  chmod +x ${cropmntpnt}/lclone
+  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/crop_config_sample.yml -O ${cropmntpnt}/config.yaml.sample
   }
 
 messaging() {
@@ -50,8 +50,8 @@ messaging() {
   echo "    https://github.com/l3uddz/crop"
   echo
   echo "    a sample configuration is files is located here"
-  echo "    ${MNTPNT}/config.yaml.sample"
-  echo "    copy and edit or create ${MNTPNT}/config.yaml"
+  echo "    ${cropmntpnt}/config.yaml.sample"
+  echo "    copy and edit or create ${cropmntpnt}/config.yaml"
   echo
 }
 

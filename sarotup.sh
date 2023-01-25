@@ -5,6 +5,9 @@
 
 # https://docs.github.com/en/rest/reference/repos#releases
 
+# new format now long established
+# TODO merge this script with installer
+
 # we need to backup the existing config
 # edit the current config to the new format
 # replace the executable with the latest
@@ -17,51 +20,51 @@ set -Eeuo pipefail
 
 source "$(dirname "$0")/maxmisc.conf"
 
-APP=sarotate
-APPDIR=/opt
+# sarotatename=sarotate
+# appdir=/opt
 
 #________ DONT CHANGE
 
-BRED="$(tput setaf 9)"   # bright red
-YELLOW="$(tput setaf 3)" # yellow
-RESET="$(tput sgr0)"     # reset
+# bred="$(tput setaf 9)"   # bright red
+# yellow="$(tput setaf 3)" # yellow
+# reset="$(tput sgr0)"     # reset
 
-MNTPNT=${APPDIR}/${APP}
-CONFIGFILE="${MNTPNT}/config.yaml"
-NEWFIGFILE="${MNTPNT}/config.yaml.new"
-APPFILE="${MNTPNT}/SARotate"
+# sarotatemntpnt=${appdir}/${sarotatename}
+# CONFIGFILE="${sarotatemntpnt}/config.yaml"
+# NEWFIGFILE="${sarotatemntpnt}/config.yaml.new"
+# sarappfile="${sarotatemntpnt}/SARotate"
 
-LATESTLINK="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
+# sarlink="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
 
 #________ FUNCTIONS
 
 rooter() {
   if [ "$(id -u)" = 0 ]; then
     echo "##################################################################"
-    echo "${BRED} Running as root or with sudo is not supported. Exiting.${RESET}"
+    echo "${bred} Running as root or with sudo is not supported. Exiting.${reset}"
     echo "##################################################################"
     exit 1
   fi
 }
 
 checkoff() {
-  ([ ! -e "${CONFIGFILE}" ] || cp "${CONFIGFILE}" "${MNTPNT}/config.yaml.bak")
-  ([ ! -e "${APPFILE}" ] || cp "${APPFILE}" "${MNTPNT}/SARotate.bak")
+  # ([ ! -e "${CONFIGFILE}" ] || cp "${CONFIGFILE}" "${sarotatemntpnt}/config.yaml.bak")
+  ([ ! -e "${sarappfile}" ] || cp "${sarappfile}" "${sarotatemntpnt}/SARotate.bak")
 }
 
 fetcher() {
-  curl -JLO "${LATESTLINK}"
+  curl -JLO "${sarlink}"
 }
 
 waiting() {
-  read -r -p "${YELLOW}Is your new config file ready?  [Y/N] : ${RESET}" i
+  read -r -p "${yellow}Is your new config file ready?  [Y/N] : ${reset}" i
   case $i in
   [yY])
-    echo -e "${YELLOW}OK moving on"
+    echo -e "${yellow}OK moving on"
     echo
     ;;
   *)
-    echo "${BRED}Invalid Option - this ones a yes yes"
+    echo "${bred}Invalid Option - this ones a yes yes"
     waiting
     ;;
   esac
@@ -69,8 +72,8 @@ waiting() {
 
 mover() {
   chmod +x SARotate
-  cp SARotate "${APPFILE}"
-  cp ${NEWFIGFILE} "${CONFIGFILE}"
+  cp SARotate "${sarappfile}"
+  # cp ${NEWFIGFILE} "${CONFIGFILE}"
 }
 
 cleanup() {

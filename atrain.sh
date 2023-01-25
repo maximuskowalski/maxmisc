@@ -9,32 +9,32 @@ IFS=$'\n\t'
 
 source "$(dirname "$0")/maxmisc.conf"
 
-APP=atrain
-APPDIR=/opt
-NETWORK=saltbox
+# atrainname=atrain
+# appdir=/opt
+# network=saltbox
 
 #________ DONT CHANGE
 
-DOCKTAG=latest
-MNTPNT=${APPDIR}/${APP}
-CONFIGUS="${MNTPNT}/a-train.toml"
+# atrainimagetag=latest
+# atrainmntpnt=${appdir}/${atrainname}
+# atrainconfig="${atrainmntpnt}/a-train.toml"
 
 #________ FUNCTIONS
 
 checkoff() {
-  ([ -d "${MNTPNT}" ] || dirmkr)
-  ([ -e ${CONFIGUS} ] || configo)
+  ([ -d "${atrainmntpnt}" ] || dirmkr)
+  ([ -e ${atrainconfig} ] || configo)
 }
 
 dirmkr() {
-  sudo mkdir -p "${MNTPNT}" && sudo chown "${USER}":"${USER}" "${MNTPNT}"
+  sudo mkdir -p "${atrainmntpnt}" && sudo chown "${USER}":"${USER}" "${atrainmntpnt}"
 }
 
 # let user complete - no var replacing
 # use heredoc instead of var
 
 configo() {
-  cat >"${CONFIGUS}" <<EOF
+  cat >"${atrainconfig}" <<EOF
 # a-train.toml
 [autoscan]
 # Replace the URL with your Autoscan URL.
@@ -52,22 +52,22 @@ EOF
 }
 
 tugger() {
-  docker image pull ghcr.io/m-rots/a-train:${DOCKTAG}
+  docker image pull ghcr.io/m-rots/a-train:${atrainimagetag}
 }
 
 dockery() {
   docker run -d \
-    --name "${APP}" \
-    --volume "${MNTPNT}":/data \
+    --name "${atrainname}" \
+    --volume "${atrainmntpnt}":/data \
     --user $UID \
-    --network="${NETWORK}" \
-    --network-alias="${APP}" \
+    --network="${network}" \
+    --network-alias="${atrainname}" \
     --restart unless-stopped \
     ghcr.io/m-rots/a-train
 }
 
 dockstop() {
-  docker stop "${APP}"
+  docker stop "${atrainname}"
   echo "...A-Train docker has been stopped for configuration"
 }
 
@@ -83,11 +83,11 @@ messaging() {
   echo "    https://github.com/Cloudbox/autoscan/tree/bernard-rs#a-train"
   echo
   echo "    your configuration is files is located here"
-  echo "    ${MNTPNT}/a-train.toml"
+  echo "    ${atrainmntpnt}/a-train.toml"
   echo "    remember to add a service account"
   echo
   echo "    to start A-Train after configuration is completed..."
-  echo "    docker start ${APP}"
+  echo "    docker start ${atrainname}"
 }
 
 fin() {
