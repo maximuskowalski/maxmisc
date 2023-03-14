@@ -15,6 +15,7 @@ network=saltbox                       # docker network
 backupdrive=mybackups                 # rclone config name of backup share drive, eg 'google'
                                       # - used for backups and transfers
 
+
 # these are auto config, you probably don't need to edit
 
 bkupdir=/home/"${myusername}"/appbackups
@@ -130,13 +131,32 @@ qakbakfile="${BAKDIR}"/config_backup"${TODAY}".zip
 
 # RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M" # THIS IS NOT USED / NOT WORKING
 
-#________for SPORTSORT.sh
+#________for LOGWHIFFER.sh
 
-# Set the source and destination directories
-src_dir="/mnt/local/downloads/nzbget/completed/TV_Sport"
-dst_dir="/mnt/sharedrives/checo_tv2/Sport"
+# Array of log files to watch
+declare -A watched_logs=(
+    ["crop"]="/opt/crop/activity.log"
+    ["cloudplow"]="/opt/cloudplow/cloudplow.log"
+    ["autoscan"]="/opt/autoscan/activity.log"
+
+)
+
+# Array of danger strings to look for in log files
+declare -A danger_strings=(
+    ["Google API 429"]="googleapi: got HTTP response code 429"
+    ["ACME cert error"]="Unable to obtain ACME certificate for domains"
+    ["fatality"]="fatal"
+)
+
+num_lines=100                # Number of lines to tail
+logsdir="/home/${USER}/logs" # Directory for storing temporary files and logs
+
+# URL for apprise notification
+webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
 
 #________for STRAPON.sh
+
 
 # LEAVE OUT FOR NOW
 

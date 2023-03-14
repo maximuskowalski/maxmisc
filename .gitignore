@@ -16,5 +16,8 @@
 # environment file
 *.env
 *.conf
+
+# my testing
 *.notes
 *.txt
+tester.sh
