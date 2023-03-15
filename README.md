@@ -142,22 +142,22 @@ Here's how to use the `cropduster.sh` script:
 
    ```sh
    ./cropduster.sh
-    ```
+   ```
 
    This command will create the Crop directory, download the latest Crop release, lclone, and a sample configuration file. It will also set the necessary permissions for the downloaded files.
 
 3. **Configure Crop:**
    After running the script, navigate to the Crop directory:
 
-    ```sh
-    cd /opt/crop
-    ```
+   ```sh
+   cd /opt/crop
+   ```
 
    Copy the sample configuration file to create your own configuration:
 
    ```sh
     cp config.yaml.sample config.yaml`
-    ```
+   ```
 
    Open `config.yaml` using your favorite text editor (e.g., nano, vim) and edit the configuration according to your needs.
 
@@ -213,16 +213,38 @@ After you have edited the logWhiffer section, save the maxmisc.conf file and run
 
 ### pleanse.sh
 
-An plex cleaner.
+An plex cleaner. WIP, **not safe to use**.
 
 ### plex_futures_n_stuckers.sh
 
 Plex futures and plex stuckers in the same script.
 
-### plex_futures.sh
+### plex_futures.sh - Update future-dated Plex Items
 
-Resets date added to plex to now if item was added as a future date.
-Set DB Path and docker name variables before execution.
+The `plex_futures.sh` script corrects Plex items that have an incorrect added date in the future. By updating the `added_at` field for these items to the current date and time, this script ensures that your Plex library displays accurate information.
+
+Here's how to use the `plex_futures.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
+
+   - `plexdockername`: The name of the Plex Docker container (default: "plex").
+   - `plexdbpath`: The path to the Plex database directory (default: "/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/").
+   - `plexdb`: The name of the Plex database file (default: "com.plexapp.plugins.library.db").
+   - `plexsql`: The path to the SQLite executable used by Plex (default: "/opt/plexsql/Plex Media Server").
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```sh
+   ./plex_futures.sh
+   ```
+
+   This command will stop the Plex Docker container, navigate to the Plex database directory, create a backup of the Plex database, remove temporary files if they exist, and update the `added_at` field for future-dated items. Finally, the script will restart the Plex Docker container.
+
+By following these steps, you will have successfully corrected future-dated items in your Plex library using the `plex_futures.sh` script.
 
 ### plex_stuckers.sh
 
