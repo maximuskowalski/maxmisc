@@ -1,65 +1,170 @@
 # maxmisc
 
-This branch is currently in mid-rewrite and some things may not work until it is merged into master.
+Welcome to the `maxmisc` repository, a collection of miscellaneous scripts and tools to simplify your life! This branch is currently undergoing a rewrite, so some things may not work until it's merged into the master branch. The undocumented scripts might serve their purpose but are still under development.
 
-Misc scripts and tools. Undocumented scripts probably do what I need them to but aren't finished yet.
+## Installation
 
-## Install
+You can choose where you'd like to store your scripts. Some people prefer to use a dedicated directory in `/opt`, while others use their home directory. In this example, we'll use `/opt/scripts/misc` as our directory.
 
-I personally use a scripts directory in '/opt' but many people use their home directory.
-Change directory to where you wish to clone:
+1. **Change directory to where you want to clone the repo:**
 
-```shell
-cd /opt/scripts/misc
-```
+   ```sh
+   cd /opt/scripts/misc
+   ```
 
-Clone the repository from GitHub and navigate into the cloned directory:
+2. **Clone the repository from GitHub and navigate into the cloned directory:**
 
-```sh
-git clone https://github.com/maximuskowalski/maxmisc.git
-cd maxmisc
-# switch branches to use the dev branch
-git checkout varConvert
-```
+   ```sh
+   git clone https://github.com/maximuskowalski/maxmisc.git
+   cd maxmisc
+   # switch branches to use the dev branch
+   git checkout varConvert
+   ```
 
-After cloning the repository, make sure that the scripts are executable by running the following command:
+3. **Ensure the scripts are executable by running the following command:**
 
-```sh
-chmod +x *.sh
-```
+   ```sh
+   chmod +x *.sh
+   ```
 
-Make a copy of the config file and edit required sections. See below for variable descriptions.
+4. **Create a copy of the config file and edit the required sections. See the variable descriptions below for guidance:**
 
-```sh
-cp maxmisc.conf.sample maxmisc.conf
+   ```sh
+   cp maxmisc.conf.sample maxmisc.conf
 
-# use nano or your favourite editor
-nano maxmisc.conf
-```
+   # use nano or your preferred text editor
+   nano maxmisc.conf
+   ```
 
-Once you have made the scripts executable, and provided the required variables you can run most scripts manually using the following command:
+5. **Running the scripts manually:**
+    After configuring the scripts, you can execute them manually using the following command:
 
-```sh
-./scriptName.sh
-```
+   ```sh
+   ./scriptName.sh
+   ```
 
-Note that each script requires certain variables to be set before it can run properly. These variables should be shown in the readme under each script heading.
+    Note that each script requires certain variables to be set before it can run properly. These variables are detailed in the README under each script heading. Some actions, like apprise or docker, have prerequisites, but they should be fairly obvious. The suite of scripts is designed to run in a [Saltbox](https://github.com/saltyorg/Saltbox) server environment but might work on other Debian-based Linux operating systems as well.
 
-That's it! With these steps, you should now be able to run sportSort on your system. If you run into any issues during installation or setup, don't hesitate to consult the README or reach out to the project's contributors for assistance.
+And that's it! With these steps, you can now run the maxmisc scripts on your system. If you encounter any issues during installation or setup, don't hesitate to consult the README or reach out to the project's contributors for assistance.
 
 ## The Scripts
 
-### atrain.sh
+### atrain.sh - The A-Train Installer
 
-Installs atrain via docker.
+The `atrain.sh` script is an A-Train installer that streamlines the process of setting up [A-Train](https://github.com/m-rots/a-train) on your system. A-Train is an automation tool designed to work in conjunction with Autoscan for managing your media libraries.
 
-### backup.app.sh
+If you have [Saltbox](https://github.com/saltyorg/Saltbox) installed there is no need to use this script, [saltbox now has an automated role](https://docs.saltbox.dev/sandbox/apps/a_train/).
 
-Backs up an app directory for transfer or backup.
+Follow these steps to run **`atrain.sh`**:
 
-### cropduster.sh
+1. **Check the script configuration:**
+    Before running the script, make sure that the required variables are properly set in the `maxmisc.conf file`. The essential variables for this script are:
 
-Installs crop.
+   - atrainname: The name of the A-Train container.
+   - appdir: The directory where the application will be installed.
+   - network: The network used by the container.
+
+2. **Execute the script:**
+    Run the script using the following command:
+
+   ```sh
+   ./atrain.sh
+   ```
+
+    This will execute a series of functions to install and configure A-Train:
+
+   - Check for the existence of the A-Train directory and configuration file. If they don't exist, create them.
+   - Pull the latest A-Train Docker image.
+   - Run the Docker container with the specified settings.
+   - Stop the A-Train Docker container for configuration.
+   - Display relevant documentation and configuration instructions.
+
+3. **Configure A-Train:**
+    After running the script, you will be provided with instructions and the location of the configuration file. The configuration file, a-train.toml, can be found in the following directory:
+
+   ```sh
+   ${appdir}/a-train.toml
+   ```
+
+    Edit this file to set your Autoscan URL, username, password, service account key file, and shared drive IDs as required.
+
+4. **Start A-Train:**
+    Once the configuration is complete, start the A-Train Docker container with the following command:
+
+   ```sh
+   docker start ${atrainname}
+   ```
+
+Congratulations! You have successfully installed and configured A-Train using the atrain.sh script. This powerful tool is now ready to work seamlessly with Autoscan to manage your media libraries.
+
+### backup.app.sh - Backup Your Application Data
+
+The `backup.app.sh` script is a handy utility for backing up your application data. It stops the specified Docker container, creates a tarball archive of your application's data, uploads the archive to a remote storage drive using rclone, and restarts the Docker container.
+
+To use `backup.app.sh`:
+
+1. **Configure the script variables:**
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
+
+   - `APPNAME`: The name of your app (used in the filename).
+   - `PARENTDIR`: The parent directory containing the app data.
+   - `APPDIR`: The app directory to be backed up.
+   - `BKUPDIR`: The local backup directory.
+   - `BKUPDRV`: The rclone config name of the destination shared drive (e.g., 'google').
+   - `SRVR`: The name of your server (used in the filename).
+   - `THEDOCKER`: The name of your app's Docker container.
+
+2. **Execute the script:**
+   Run the script using the following command:
+
+   ```sh
+   ./backup.app.sh
+   ```
+
+   This command will stop the specified Docker container, create a tarball archive of your application's data, upload the archive to a remote storage drive using rclone, and restart the Docker container.
+
+With the `backup.app.sh` script, you can easily create backups of your application data and ensure the safety of your valuable information.
+
+### cropduster.sh - Install and Set Up Crop
+
+The `cropduster.sh` script automates the installation and setup of Crop, a powerful utility for managing files on cloud storage. Crop is developed by l3uddz and can be found on GitHub [here](https://github.com/l3uddz/crop).
+
+Here's how to use the `cropduster.sh` script:
+
+1. **Configure the script variables:**
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
+
+   - `cropname`: The name of the Crop directory (default: "crop").
+   - `appdir`: The parent directory for installing Crop (default: "/opt").
+
+2. **Execute the script:**
+   Run the script using the following command:
+
+   ```sh
+   ./cropduster.sh
+    ```
+
+   This command will create the Crop directory, download the latest Crop release, lclone, and a sample configuration file. It will also set the necessary permissions for the downloaded files.
+
+3. **Configure Crop:**
+   After running the script, navigate to the Crop directory:
+
+    ```sh
+    cd /opt/crop
+    ```
+
+   Copy the sample configuration file to create your own configuration:
+
+   ```sh
+    cp config.yaml.sample config.yaml`
+    ```
+
+   Open `config.yaml` using your favorite text editor (e.g., nano, vim) and edit the configuration according to your needs.
+
+4. **Access Crop documentation:**
+   For detailed information on using Crop, refer to the [official GitHub repository](https://github.com/l3uddz/crop).
+
+By following these steps, you will have successfully installed and set up Crop using the `cropduster.sh` script.
 
 ### logWhiffer.sh
 

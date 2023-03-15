@@ -25,6 +25,7 @@ IFS=$'\n\t'
 
 #________ VARS ( CONFIG FILE ( REPO WIDE))
 # shellcheck source-path=SCRIPTDIR
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
 
 #________ FUNCTIONS
@@ -77,9 +78,12 @@ log_sniffer() {
     local danger_string=$2
     local temp_file="$logsdir/sniffedlogs.txt"
 
-    echo "log_sniffer function" >>"$logsdir/logWhiff.log"
-    echo "danger_string: $danger_string" >>"$logsdir/logWhiff.log"
-    echo "Sending notification for $code" >>"$logsdir/logWhiff.log"
+    {
+        echo
+        "log_sniffer function"
+        "danger_string: $danger_string"
+        "Sending notification for $code"
+    } >>"$logsdir/logWhiff.log"
 
     for short_name in "${!watched_logs[@]}"; do
         log_file="${watched_logs[$short_name]}"
@@ -97,13 +101,16 @@ the_message() {
     local danger_string="$2"
     local log_file="$3"
     local short_name="$4"
-    echo "the_message function" >>"$logsdir/logWhiff.log"
     local date
     date=$(date "+%Y-%m-%d")
     local time
     time=$(date "+%H:%M:%S")
-    local msg="@everyone<br />[$date $time]<br />**ERROR ALERT**<br />\"${danger_strings[$code]}\"<br />found in **$short_name** log file"
-    echo "$msg" >>"$logsdir/logWhiff.log"
+    local msg="@everyone<br />[$date $time]<br />**ERROR ALERT**<br /><br />**${thisserver}**<br />\"${danger_strings[$code]}\"<br />found in **$short_name** log file"
+    {
+        echo
+        "the_message function"
+        "$msg"
+    } >>"$logsdir/logWhiff.log"
     send_notification "$msg"
 }
 
@@ -111,8 +118,6 @@ the_message() {
 
 send_notification() {
     local msg="$1"
-
-    echo "send_notification function" >>"$logsdir/logWhiff.log"
 
     # Check if webhook_url is set and is not a default value
     if [ -z "$webhook_url" ] || [ "$webhook_url" = "https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ]; then
