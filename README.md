@@ -246,44 +246,277 @@ Here's how to use the `plex_futures.sh` script:
 
 By following these steps, you will have successfully corrected future-dated items in your Plex library using the `plex_futures.sh` script.
 
-### plex_stuckers.sh
+### Plex_stuckers.sh - Reset Plex `added_at` Dates to Airdate or Premiere Date
 
-Resets date added to plex to airdate or premiere date.
-Set DB Path and docker name variables before execution.
+The `plex_stuckers.sh` script resets the `added_at` dates of Plex items to their airdate or premiere date, ensuring that your Plex library displays accurate and consistent information.
 
-### plex_transfer.sh
+Here's how to use the `plex_stuckers.sh` script:
 
-Use on the donor end to transfer a plex db to another instance.
+1. **Configure the script variables:**
 
-### plex_unpack.sh
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
 
-Use on the receiving end when you transfer a plex db to another instance.
+   - `plexdockername`: The name of the Plex Docker container (default: "plex").
+   - `plexdbpath`: The path to the Plex database directory (default: "/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/").
+   - `plexdb`: The name of the Plex database file (default: "com.plexapp.plugins.library.db").
+   - `plexsql`: The path to the SQLite executable used by Plex (default: "/opt/plexsql/Plex Media Server").
 
-### quack.sh
+2. **Execute the script:**
 
-A quick backup script
+   Run the script using the following command:
 
-### restore.app.sh
+   ```shell
+   ./plex_stuckers.sh`
+   ```
 
-Use to restore an app backed up using backup.app.sh.
+   This command will stop the Plex Docker container, navigate to the Plex database directory, create a backup of the Plex database, remove temporary files if they exist, and update the `added_at` field to match the `originally_available_at` field for items with mismatched dates. Finally, the script will restart the Plex Docker container.
 
-### sarotund.sh
+By following these steps, you will have successfully reset the `added_at` dates of Plex items to their airdate or premiere date using the `plex_stuckers.sh` script.
 
-Use to install saRotate.
+### plex_transfer.sh - Transfer Plex Database and Metadata to Another Instance
 
-### sarotup.sh
+The `plex_transfer.sh` script allows you to transfer a Plex database and its associated metadata to another Plex instance. This is useful when you need to migrate your Plex library between servers or set up a new instance with the same content.
 
-Use to update saRotate.
+Here's how to use the `plex_transfer.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
+
+   - `backupdrive`: The rclone config name of the backup share drive (e.g., 'google').
+   - `plexdockername`: The name of the Plex Docker container (default: "plex").
+   - `plexservername`: The name of your Plex server (used in the filename).
+   - `thisserver`: The name of your current server (e.g., "hetzner01").
+   - `bkupdir`: The local backup directory (default: "/home/USER/appbackups").
+   - `plexdblocation`: The absolute path to the Plex database file.
+   - `plexmdlocation`: The absolute path to the Plex metadata directory.
+   - `plextrnsfrdb`: The file path for the temporary transfer backup of the Plex database.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./plex_transfer.sh
+   ```
+
+   This command will create the backup directory if it doesn't already exist, stop the Plex Docker container, create a temporary transfer backup of the Plex database, restart the Plex Docker container, compress the Plex metadata and temporary transfer backup into a `.tar.gz` archive, and upload the archive to the specified backup drive using rclone.
+
+After the script has completed, you will see a message confirming the backup file's creation and its location. You can then transfer this backup file to the target server or instance, where you can restore the Plex database and metadata using `plex_unpack.sh`, or some other suitable script or method.
+
+### plex_unpack.sh - Restore Plex Database and Metadata on Receiving Instance
+
+The `plex_unpack.sh` script is used on the receiving end when you transfer a Plex database and its associated metadata to another instance. This script restores the transferred Plex database and metadata on the target instance.
+
+Here's how to use the `plex_unpack.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. The essential variables for this script are:
+
+   - `backupdrive`: The rclone config name of the backup share drive (e.g., 'google').
+   - `plexdockername`: The name of the Plex Docker container (default: "plex").
+   - `plexbuservername`: The name of the Plex server from which the backup was taken (used in the filename).
+   - `bufromserver`: The name of the server from which the backup was taken (e.g., "hetzner01").
+   - `bkupdir`: The local backup directory (default: "/home/USER/appbackups").
+   - `plexdblocation`: The absolute path to the Plex database file on the target instance.
+   - `plextrnsfrdb`: The file path for the temporary transfer backup of the Plex database on the target instance.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./plex_unpack.sh
+   ```
+
+   This command will create the backup directory if it doesn't already exist, stop the Plex Docker container, download the backup archive from the specified backup drive using rclone, extract the Plex metadata and temporary transfer backup from the archive, copy the temporary transfer backup to the target Plex database location, and start the Plex Docker container.
+
+After the script has completed, the Plex database and metadata from the donor instance will be restored on the target instance.
+
+### quack.sh - A Quick Incremental Backup Script for Config Files and Scripts
+
+The `quack.sh` script is a quick incremental backup tool for configuration files and scripts from your Saltbox installations. It is not a complete Saltbox backup solution. The script takes care of backing up user crontab, system information, and specific directories mentioned in the configuration files.
+
+Here's how to use the `quack.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `myusername`: Your username.
+   - `qkupdir`: The root directory for the backup.
+   - `fileslist`, `filtlist`, `ziplist`: Paths to the files containing the list of files, directories, and zip directories, respectively.
+   - `qakupload`: Boolean variable indicating if the backup should be uploaded.
+   - `backupdrive`: The rclone config name of the backup share drive (e.g., 'maxbackup').
+   - `thisserver`: The name of the server being backed up.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./quack.sh
+   ```
+
+   This command will perform a sequence of tasks, including checking for root runners, creating destination directories, copying specified files and directories, zipping certain directories, rotating backups, and uploading the backup if configured to do so. The script will display a "backup complete" message when it's done.
+
+After the script has completed, your specified configuration files and scripts will be backed up in the backup directory specified in the script.
+
+### restore.app.sh - A Script to Restore an App Backed Up Using backup.app.sh
+
+`restore.app.sh` is a script used to restore an app that has been backed up using the `backup.app.sh` script. It retrieves the backup file from a remote location and restores the app data in the specified directory.
+
+Here's how to use the `restore.app.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `PARENTDIR`: The parent directory in which the backup directory is nested (e.g., docker appdata).
+   - `APPDIR`: The app directory to restore.
+   - `RESTOREDIR`: The local directory to save the tar file for restore.
+   - `BKUPDRV`: The rclone config name of the backup share drive (e.g., 'maxbackup').
+   - `FILEPATH`: The path on the rclone remote to the file.
+   - `FILENAME`: The name of the file to restore.
+   - `THEDOCKER`: The name of your app docker - to stop and start.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./restore.app.sh
+   ```
+
+   This command will perform a sequence of tasks, including checking for the necessary directories, pulling the backup file from the remote storage, stopping the Docker container if it exists, extracting the backup file, and starting the Docker container.
+
+After the script has completed, your specified app will be restored from the backup file in the target directory.
+
+### sarotund.sh - A Script to Install SARotate
+
+`sarotund.sh` is a script that installs [SARotate](https://github.com/saltydk/SARotate), an application that rotates mount points for rclone remotes to prevent API bans.
+
+Here's how to use the `sarotund.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `sarotatename`: The name of the SARotate directory (default: sarotate).
+   - `appdir`: The parent directory where SARotate will be installed.
+   - `sarsysdinst`: Set to `true` if you want to create a systemd file and enable it. The service will not start automatically.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./sarotund.sh
+   ```
+
+   This command will perform a sequence of tasks, including checking for the necessary directories, downloading SARotate, creating a sample configuration file, and optionally creating and enabling a systemd service.
+
+After the script has completed, SARotate will be installed in the specified directory. Make sure to create or edit the `config.yaml` file based on the provided `config.yaml.sample` before attempting to start SARotate.
+
+### sarotup.sh - A Script to Update SARotate
+
+`sarotup.sh` is a script that updates [SARotate](https://github.com/saltydk/SARotate), an application that rotates mount points for rclone remotes to prevent API bans.
+
+Here's how to use the `sarotup.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `sarotatename`: The name of the SARotate directory (default: sarotate).
+   - `appdir`: The parent directory where SARotate is installed.
+
+2. **Execute the script:**
+
+   Run the script using the following command:
+
+   ```shell
+   ./sarotup.sh
+   ```
+
+   This command will perform a sequence of tasks, including checking for the existing SARotate executable, downloading the latest version, and updating the executable.
+
+   During the update process, the script will prompt you if your new config file is ready. Make sure to create or edit the `config.yaml` file based on the provided `config.yaml.sample` before attempting to start SARotate.
+
+After the script has completed, SARotate will be updated to the latest version.
 
 ### strapon.sh
 
-Bootstrap an ubuntu server with my common enough tasks that I have a script ready to go. Kind of specific.
+Bootstrap an ubuntu server with my common enough tasks that I have a script ready to go. Kind of specific. WIP, **not safe to use**.
 
-### wanchors.sh
+### wanchors.sh - A Script to Watch Anchor Files and Prevent Docker Apps from Running
 
-Watches anchor files. If anchors are missing will shut down docker apps like plex to prevent library being emptied.
-Use cron to run script at desired interval, eg minutely. Use wanchplus.sh to also restart those dockers and the merger.
+`wanchors.sh` is a script that watches specified anchor files and stops specified Docker apps (e.g., Plex, Emby, Jellyfin) if any of the anchor files are missing. This prevents the libraries from being emptied when the rclone mounts are not working correctly. You can run the script at a desired interval using cron.
 
-`* * * * * /home/max/scripts/wanchors.sh`
+Here's how to use the `wanchors.sh` script:
 
-### wanchplus.sh
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `ANCHOR`: The anchor files you want to watch, separated by commas (e.g., `td_tv1.bin,td_movies.bin`).
+   - `DIR`: The location of the anchor files (e.g., `/mnt/unionfs`).
+   - `SAPPS`: The Docker service apps you want to stop if the anchor files are missing, separated by spaces (e.g., `plex emby jellyfin`).
+   - `NOTIFICATION`: A placeholder variable for an optional notification script.
+
+2. **Add the script to the cron:**
+
+   Open the crontab editor with the following command:
+
+   ```shell
+   crontab -e
+   ```
+
+   Add the following line to your crontab file to run the script every minute:
+
+   ```shell
+   * * * * /path/to/wanchors.sh`
+   ```
+
+   Replace `/path/to/wanchors.sh` with the actual path to the script.
+
+   Save and exit the editor.
+
+The script will now run at the specified interval and stop the Docker apps if any of the anchor files are missing. This will prevent the libraries from being emptied if the rclone mounts are not working correctly.
+
+### wanchplus.sh - A Script to Watch Anchor Files, Stop and Restart Docker Apps, and System Services
+
+`wanchplus.sh` is a script that watches specified anchor files and stops specified Docker apps (e.g., Plex, Emby, Jellyfin) if any of the anchor files are missing. It then restarts specified system services (e.g., mergerfs) and starts the Docker apps again. This helps ensure that your library is not accidentally emptied when the rclone mounts are not working correctly. You can run the script at a desired interval using cron.
+
+Here's how to use the `wanchplus.sh` script:
+
+1. **Configure the script variables:**
+
+   Before running the script, set the required variables in the script itself or in the `maxmisc.conf` file. Some essential variables for this script are:
+
+   - `ANCHOR`: The anchor files you want to watch, separated by commas (e.g., `audiobooks,td_tv2.bin`).
+   - `DIR`: The location of the anchor files (e.g., `/mnt/unionfs`).
+   - `SAPPS`: The Docker service apps you want to stop and restart if the anchor files are missing, separated by spaces (e.g., `plex emby emby2 plexhex jellyfin calibre`).
+   - `SYSAPPS`: The system services you want to restart, separated by spaces (e.g., `mergerfs munter`).
+   - `WANCHLOG`: The log file to store the script's output (e.g., `/home/max/logs/wanch.log`).
+
+2. **Add the script to the cron:**
+
+   Open the crontab editor with the following command:
+
+   ```shell
+   crontab -e
+   ```
+
+   Add the following line to your crontab file to run the script every minute:
+
+   ```shell
+   * * * * /path/to/wanchplus.sh
+   ```
+
+   Replace `/path/to/wanchplus.sh` with the actual path to the script.
+
+   Save and exit the editor.
+
+The script will now run at the specified interval and stop the Docker apps if any of the anchor files are missing. It will then restart the specified system services and start the Docker apps again. This ensures that your library remains intact even if the rclone mounts are not working correctly.
