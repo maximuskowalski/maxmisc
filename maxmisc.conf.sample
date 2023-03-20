@@ -2,74 +2,68 @@
 ######## CONFIG FILE FOR maxmisc scripts
 ########################################
 
+# Fill in Universal section and sction related to scripts
+# [ saltbox default ] indicates variable is set to the saltbox default already
+
 # TODO convert all to lower case, uniquify certain vars that may clash, source these vars within scripts
+# test all scripts
+# test variable expansion - all scripts
+# build in checks for integers when reqd
 
 ########################
 # UNIVERSAL SECTION
 ########################
 
-thisserver=maxical                    # name of this server, eg hetzner01049
-myusername=max                        # your user name on this server, eg rimjobsteve
-appdir=/opt                           # parent dir of your apps and app data
-network=saltbox                       # docker network
-backupdrive=mybackups                 # rclone config name of backup share drive, eg 'google'
-                                      # - used for backups and transfers
+thisserver="maxical"    # name of this server, eg hetzner01049
+myusername="${USER}"    # your user name on this server, eg rimjobsteve
+appdir="/opt"           # parent dir of your apps and app data [ saltbox default ]
+network="saltbox"       # docker network [ saltbox default ]
+backupdrive="mybackups" # rclone config name of your remote backup drive, eg 'google' - used for backups and transfers
 
+# URL for apprise notifications, leave as is if notifications not required
+webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # these are auto config, you probably don't need to edit
-
-bkupdir=/home/"${myusername}"/appbackups
-today=$(date '+%Y_%d_%m__%H_%M_%S')
-logsdir=/home/"${myusername}"/logs    # directory for logs
+bkupdir="/home/${myusername}/miscbackups" # directory for temporary backup data
+today=$(date '+%Y_%d_%m__%H_%M_%S')       # date stamp
+logsdir="/home/${myusername}/logs"        # directory for logs
 
 # some colours
-
-BRED="$(tput setaf 9)"   # bright red
-YELLOW="$(tput setaf 3)" # yellow
-RESET="$(tput sgr0)"     # reset
 
 bred="$(tput setaf 9)"   # bright red
 yellow="$(tput setaf 3)" # yellow
 reset="$(tput sgr0)"     # reset
-
 
 ########################
 # PLEX RELATED
 ########################
 
 #________for pleanse.sh
-
-plexdir=/opt/plex
-
 #________for plex_futures.sh
 #________for plex_stuckers.sh
 #________for plex_futures_n_stuckers.sh
-
-plexdockername=plex
-plexdbpath="/opt/plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/"
-plexdb="com.plexapp.plugins.library.db"
-plexsql="/opt/plexsql/Plex Media Server"
-
 #________for plex_transfer.sh
 #________for plex_unpack.sh
 
-pmspath="/opt/plex/Library/Application Support/Plex Media Server/"
-
+plexdockername="plex"                                              # docker name of instance [ saltbox default ]
+plexdir="/opt/plex"                                                # plex top level path containing "Library" [ saltbox default ]
+pmspath="/opt/plex/Library/Application Support/Plex Media Server/" # Plex Media Server path [ saltbox default ]
+plexdbpath="${pmspath}Plug-in Support/Databases/"                  # database path [ saltbox default ]
+plexsql="/opt/plexsql/Plex Media Server"                           # path to plexsql [ saltbox default ]
 
 # plex DB and metadata location, absolute paths
 # these are auto config, you probably don't need to edit
-
-plexdblocation="${plexdbpath}${plexdb}"
-plexmdlocation="${pmspath}Metadata"
-plextrnsfrdb="${bkupdir}/${plexdb}.trnsfrbkup"
+plexdb="com.plexapp.plugins.library.db"        # don't change
+plexdblocation="${plexdbpath}${plexdb}"        # location of plex database
+plexmdlocation="${pmspath}Metadata"            # location of plex metadata
+plextrnsfrdb="${bkupdir}/${plexdb}.trnsfrbkup" # location of plex db backupfile for transfer
 
 #________for plex_transfer.sh only
-plexservername=imhotep        # name of your plex server - used in filename creation
+plexservername="imhotep" # name of your plex server - used in filename creation
 
 #________for plex_unpack.sh only
-plexbuservername=imhotep      # name of your plex server to restore FROM- used in filename
-bufromserver=hetzner01        # name of your server to restore FROM, eg hetzner01
-
+plexbuservername="russell" # name of your plex server to restore FROM- used in filename
+bufromserver="hetzner01"   # name of your server to restore FROM, eg hetzner01
 
 ########################
 # APP INSTALLERS
@@ -77,33 +71,31 @@ bufromserver=hetzner01        # name of your server to restore FROM, eg hetzner0
 
 #________for atrain.sh
 
-atrainname=atrain
-atrainimagetag=latest
+atrainname="atrain"     # atrain name
+atrainimagetag="latest" # atrain docker tag - unlikely to ever change
 
 # these are auto config, you probably don't need to edit
-atrainmntpnt=${appdir}/${atrainname}
-atrainconfig="${atrainmntpnt}/a-train.toml"
+atrainmntpnt="${appdir}/${atrainname}"      # the directory into which atrain will be installed
+atrainconfig="${atrainmntpnt}/a-train.toml" # the atrain config file
 
 #________for cropduster.sh
 
-cropname=crop
+cropname="crop" # crop name
 
 # auto config, you probably don't need to edit
-cropmntpnt=${appdir}/${cropname}
+cropmntpnt="${appdir}/${cropname}" # the directory into which crop will be installed
 
 #________for sarotund.sh
 #________for sarotup.sh
 
-sarotatename=sarotate
-sarsysdinst=true # creates systemd file and enables but does not start
+sarotatename="sarotate" # sarotate name
+sarsysdinst=true        # creates systemd file and enables but does not start, true / false
 
 # these are auto config, you probably don't need to edit
-
-sarotatemntpnt=${appdir}/${sarotatename}
-sarotateconfig="${sarotatemntpnt}/config.yaml.sample"
-sarlink="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
-sarappfile="${sarotatemntpnt}/SARotate"
-
+sarotatemntpnt="${appdir}/${sarotatename}"            # the directory into which SARotate will be installed
+sarotateconfig="${sarotatemntpnt}/config.yaml.sample" # SARotate config sample
+sarlink=$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)
+sarappfile="${sarotatemntpnt}/SARotate" # SARotate app location
 
 ########################
 # GENERAL UTILITIES
@@ -111,29 +103,29 @@ sarappfile="${sarotatemntpnt}/SARotate"
 
 #________for quack.sh
 
-fileslist=filelist.txt
-filtlist=filtlist.txt
-ziplist=ziplist.txt
+fileslist="filelist.txt" # list of files to backup
+filtlist="filtlist.txt"  # list of filters to use
+ziplist="ziplist.txt"    # list of dirs to zip for inclusion in backup
 
 # UPLOADER
-qakupload=true
+qakupload=true # upload backup to an rclone remote, true / false
 
 # these are auto config, you probably don't need to edit
 
-qkupdir=${bkupdir}/quack
-# SUBSET
-qaktmpdir="${qkupdir}"/files
-qakzipsdir="${qkupdir}"/zips
-qakbakdir="${qkupdir}"/backups
-qakinfdir="${qkupdir}"/info
-qakfirstrun="${qakinfdir}"/quack.txt
-qakbakfile="${BAKDIR}"/config_backup"${TODAY}".zip
+qkupdir=${bkupdir}/quack                              # quack backup location for file collection
+qaktmpdir="${qkupdir}"/files                          # location for files collection
+qakzipsdir="${qkupdir}"/zips                          # location for zips collection
+qakbakdir="${qkupdir}"/backups                        # location for bakups
+qakinfdir="${qkupdir}"/info                           # location for info
+qakfirstrun="${qakinfdir}"/quack.txt                  # first run info
+qakbakfile="${qakbakdir}"/config_backup"${TODAY}".zip # location for backup file
 
 # RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M" # THIS IS NOT USED / NOT WORKING
 
 #________for LOGWHIFFER.sh
 
 # Array of log files to watch
+# use format:  ["short_nickname"]="/location/of/logfile.log"
 declare -A watched_logs=(
     ["crop"]="/opt/crop/activity.log"
     ["cloudplow"]="/opt/cloudplow/cloudplow.log"
@@ -142,40 +134,30 @@ declare -A watched_logs=(
 )
 
 # Array of danger strings to look for in log files
+# use format:  ["short_nickname"]="string to look for in logs"
 declare -A danger_strings=(
     ["Google API 429"]="googleapi: got HTTP response code 429"
     ["ACME cert error"]="Unable to obtain ACME certificate for domains"
     ["fatality"]="fatal"
 )
 
-num_lines=100                # Number of lines to tail
-logsdir="/home/${USER}/logs" # Directory for storing temporary files and logs
-
-# URL for apprise notification
-webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-
+num_lines=100 # Number of lines to tail from a log file
 
 #________for STRAPON.sh
 
-
-# LEAVE OUT FOR NOW
+# JUST LEAVE OUT FOR NOW
 
 ########
 #________for WANCHORS.sh
 
-ANCHOR=td_tv1.bin,td_movies.bin   # anchor files, use commas
-DIR="/mnt/unionfs"                # location of anchor files
-SAPPS="plex emby jellyfin"        # docker service apps, separate with spaces.
-NOTIFICATION="/opt/somescript.sh" # place holder
+anchor=audiobooks,td_tv1.bin,td_movies.bin # anchor files, use commas to separate (a directory is also a file)
+dir="/mnt/unionfs"                         # location of anchor files
+sapps="plex emby jellyfin"                 # docker service apps, separate with spaces.
+wanchlog="/home/max/logs/wanch.log"        # logfile
 
 #________for WANCH PLUS.sh
 
-ANCHOR=audiobooks,td_tv2.bin                          # anchors, use commas (a directory is also a file)
-DIR="/mnt/unionfs"                                    # location of anchor files
-SAPPS="plex emby emby2 plexhex jellyfin calibre"      # docker service apps, separate with spaces.
-SYSAPPS="mergerfs munter"                             # system services, separate with spaces.
-WANCHLOG="/home/max/logs/wanch.log"                   # logfile
-
+sysapps="rclone_vfs mergerfs munter" # system services, separate with spaces.
 
 ########################
 # APP TRANSFER or BACKUP
@@ -183,21 +165,20 @@ WANCHLOG="/home/max/logs/wanch.log"                   # logfile
 
 #________for BackupAPP.sh
 
-
 #CHANGETHIS
-APPNAME=plex                       # name of your app - used in filename
+APPNAME=plex # name of your app - used in filename
 #CHANGETHIS
-PARENTDIR="/opt"                   # Parent dir in which backup dir is nested (docker appdata)
+PARENTDIR="/opt" # Parent dir in which backup dir is nested (docker appdata)
 #CHANGETHIS
-APPDIR="plex"                      # appdir to backup
+APPDIR="plex" # appdir to backup
 #CHANGETHIS
 BKUPDIR=/home/"${USER}"/appbackups # local backup dir
 #CHANGETHIS
-BKUPDRV=maxbackup                  # rclone config name of destination share drive, eg 'google'
+BKUPDRV=maxbackup # rclone config name of destination share drive, eg 'google'
 #CHANGETHIS
-SRVR=maxical                       # name of your server, eg hetzner01 - used in filename
+SRVR=maxical # name of your server, eg hetzner01 - used in filename
 #CHANGETHIS
-THEDOCKER=plex                     # name of your app docker - to stop and start
+THEDOCKER=plex # name of your app docker - to stop and start
 
 #________for RESTORE APP.sh
 
@@ -208,6 +189,3 @@ BKUPDRV=maxbackup         # rclone config name of destination share drive, eg 'g
 FILEPATH=/backups/maxical # Path on rclone remote to the file
 FILENAME=appname.tar.gz   # Name of file to restore
 THEDOCKER=plex            # name of your app docker - to stop and start
-
-
-

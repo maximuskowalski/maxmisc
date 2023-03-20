@@ -1,26 +1,27 @@
 #!/usr/bin/env bash
-# A script to watch for rclone mount anchors and stop muh dockers.
+# https://github.com/maximuskowalski/maxmisc/blob/master/wanchors.sh
+# A script to watch rclone mount anchors and stop muh dockers.
 
-# VARIABLES
+# shellcheck disable=SC2154
 
+# set -x
+
+#________ VARS ( CONFIG FILE ( REPO WIDE))
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
 
-
-ANCHOR=td_tv1.bin,td_movies.bin   # anchor files, use commas
-DIR="/mnt/unionfs"                # location of anchor files
-SAPPS="plex emby jellyfin"        # docker service apps, separate with spaces.
-NOTIFICATION="/opt/somescript.sh" # place holder
+# anchor=td_tv1.bin,td_movies.bin # anchor files, use commas
+# dir="/mnt/unionfs"              # location of anchor files
+# sapps="plex emby jellyfin"      # docker service apps, separate with spaces.
 
 checker() {
-  for VAL in ${ANCHOR//,/ }; do
-    ([ -e "${DIR}"/"${VAL}" ] || thrillkillkult)
+  for VAL in ${anchor//,/ }; do
+    ([ -e "${dir}"/"${VAL}" ] || thrillkillkult)
   done
 }
 
 thrillkillkult() {
-  docker stop ${SAPPS}
+  docker stop "${sapps}"
 }
 
 checker
-
-#
