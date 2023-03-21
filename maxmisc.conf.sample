@@ -19,17 +19,19 @@ myusername="${USER}"    # your user name on this server, eg rimjobsteve
 appdir="/opt"           # parent dir of your apps and app data [ saltbox default ]
 network="saltbox"       # docker network [ saltbox default ]
 backupdrive="mybackups" # rclone config name of your remote backup drive, eg 'google' - used for backups and transfers
+donorserver="osiris"    # name of the server app data will be restored from, eg hetzner03169
 
 # URL for apprise notifications, leave as is if notifications not required
 webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # these are auto config, you probably don't need to edit
-bkupdir="/home/${myusername}/miscbackups" # directory for temporary backup data
-today=$(date '+%Y_%d_%m__%H_%M_%S')       # date stamp
-logsdir="/home/${myusername}/logs"        # directory for logs
+bkupdir="/home/${myusername}/maxmisc/backups"         # directory for temporary backup data
+restoredir="/home/${myusername}/maxmisc/restores"     # directory for temporary restore data
+today=$(date '+%Y_%d_%m__%H_%M_%S')                   # date stamp
+logsdir="/home/${myusername}/logs"                    # directory for logs
+rflags="--drive-chunk-size=2048M --buffer-size 8192M" # rclone file transfer flags
 
 # some colours
-
 bred="$(tput setaf 9)"   # bright red
 yellow="$(tput setaf 3)" # yellow
 reset="$(tput sgr0)"     # reset
@@ -165,27 +167,28 @@ sysapps="rclone_vfs mergerfs munter" # system services, separate with spaces.
 
 #________for BackupAPP.sh
 
-#CHANGETHIS
-APPNAME=plex # name of your app - used in filename
-#CHANGETHIS
-PARENTDIR="/opt" # Parent dir in which backup dir is nested (docker appdata)
-#CHANGETHIS
-APPDIR="plex" # appdir to backup
-#CHANGETHIS
-BKUPDIR=/home/"${USER}"/appbackups # local backup dir
-#CHANGETHIS
-BKUPDRV=maxbackup # rclone config name of destination share drive, eg 'google'
-#CHANGETHIS
-SRVR=maxical # name of your server, eg hetzner01 - used in filename
-#CHANGETHIS
-THEDOCKER=plex # name of your app docker - to stop and start
+# Define multiple apps
+# three fields separated by |:
+# app name, app data directory, and Docker container name
+# if app is not using docker then leave container name field blank
+
+apps=(
+  "plex|plex|plex"
+  "app2|app2_data|app2_docker"
+  "app3|app3_data|app3_docker"
+)
+
+
+appname="plex"       # name of your app - used in filename
+appdatadir="plex"    # appdir to backup
+appdockername="plex" # name of your app docker - to stop and start
 
 #________for RESTORE APP.sh
 
-PARENTDIR="/opt"          # Parent dir in which backup dir is nested (docker appdata)
-APPDIR="plex"             # appdir to backup
-RESTOREDIR=~/apprestore   # local dir to save tar for restore
-BKUPDRV=maxbackup         # rclone config name of destination share drive, eg 'google'
-FILEPATH=/backups/maxical # Path on rclone remote to the file
-FILENAME=appname.tar.gz   # Name of file to restore
-THEDOCKER=plex            # name of your app docker - to stop and start
+donorappname="plex"         # name of the app you want restored
+restoreappdockername="plex" # name of your app docker - to stop and start
+
+# these are auto config, you probably don't need to edit
+donorfilepath=/backups/$donorserver     # Path on rclone remote to the donor file
+donorfilename=$donorappname.tar.gz      # Name of file to restore
+restoretarget="${appdir}/${appdatadir}" # location app will restore to

@@ -1,48 +1,49 @@
 #!/usr/bin/env bash
 # https://github.com/maximuskowalski/maxmisc/blob/master/restore.app.sh
 
-#________ VARS
+# shellcheck disable=SC2154
 
+#________ DEV
+# set -x
+# set -Eeuo pipefail
+
+# TODO: If using ${USER} then we should eliminate root runners
+# confirm rflags expand properly
+
+IFS=$'\n\t'
+
+#________ VARS
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
 
-PARENTDIR="/opt"          # Parent dir in which backup dir is nested (docker appdata)
-APPDIR="plex"             # appdir to backup
-RESTOREDIR=~/apprestore   # local dir to save tar for restore
-BKUPDRV=maxbackup         # rclone config name of destination share drive, eg 'google'
-FILEPATH=/backups/maxical # Path on rclone remote to the file
-FILENAME=appname.tar.gz   # Name of file to restore
-THEDOCKER=plex            # name of your app docker - to stop and start
-
-TARGET="${PARENTDIR}/${APPDIR}"
-RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M"
 #______________ FUNCTIONS
 
 check_for_dirs() {
-  ([ -d "${RESTOREDIR}" ] || make_restoredir)
-  ([ -d "${TARGET}" ] || make_target)
+  ([ -d "${restoredir}" ] || make_restoredir)
+  ([ -d "${restoretarget}" ] || make_target)
 }
 
 make_restoredir() {
-  mkdir -p "${RESTOREDIR}"
+  mkdir -p "${restoredir}"
 }
 
 make_target() {
-  sudo mkdir -p "${TARGET}"
-  sudo chown "${USER}":"${USER}" "${TARGET}"
-  chmod 775 "${TARGET}"
+  sudo mkdir -p "${restoretarget}"
+  sudo chown "${USER}":"${USER}" "${restoretarget}"
+  chmod 775 "${restoretarget}"
 }
 
 pull_files() {
-  rclone copy -vP "${BKUPDRV}":"${FILEPATH}/${FILENAME}" "${RESTOREDIR}" "${RFLAGS}"
+  rclone copy -vP "${backupdrive}":"${donorfilepath}/${donorfilename}" "${restoredir}" "${rflags}"
 }
 
 dockerinstalled() {
   if [[ $(which docker) && $(docker --version) ]]; then
-        DOCKERINST="true"
+    dockerinst="true"
   else
-        echo "docker not installed"
-        DOCKERINST="false"
-fi
+    echo "docker not installed"
+    dockerinst="false"
+  fi
 }
 
 # -q = quiet, show ID only
@@ -51,32 +52,36 @@ fi
 # TODO: how to deal with no docker at all causing command failure
 # shellcheck disable=SC1073
 dockcheck() {
-    if [ $DOCKERINST = true ]; then
-       if [ "$(docker ps -a -q -f name=${THEDOCKER})" ]; then
-            DOCKEXIST="true"
-            docker stop ${THEDOCKER}
+  if [ $dockerinst = true ] && [ -n "${restoreappdockername}" ]; then
+    if [ "$(docker ps -a -q -f name="${restoreappdockername}")" ]; then
+      dockexist="true"
+      docker stop "${restoreappdockername}"
     else
-        DOCKEXIST="false"
-        echo no docker named ${THEDOCKER} running
+      dockexist="false"
+      echo "No Docker container named '${restoreappdockername}' running"
     fi
+  else
+    dockexist="false"
+    echo "Docker not installed or no container name provided"
+  fi
 }
 
 extractomate() {
-  tar -xvzf "${RESTOREDIR}"\/"${FILENAME}" -C "${PARENTDIR}"
+  tar -xvzf "${restoredir}/${donorfilename}" -C "${appdir}"
 }
 
 dockstart() {
-    if [ $DOCKEXIST = true ]; then
-        docker start ${THEDOCKER}
-    else
-        echo no docker named ${THEDOCKER} to start
-    fi
+  if [ "$dockexist" = true ]; then
+    docker start "${restoreappdockername}"
+  else
+    echo no docker named "${restoreappdockername}" to start
+  fi
 }
 
 exiting() {
-    echo
-    echo "restore complete"
-    echo
+  echo
+  echo "restore complete"
+  echo
 }
 
 #______________ SET LIST
