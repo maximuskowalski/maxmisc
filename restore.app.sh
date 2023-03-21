@@ -18,6 +18,13 @@ source "$(dirname "$0")/maxmisc.conf"
 
 #______________ FUNCTIONS
 
+check_root() {
+  if [ "$(id -u)" -eq 0 ]; then
+    echo "This script should not be run as root. Please run it as a normal user with access to 'sudo' commands."
+    exit 1
+  fi
+}
+
 check_for_dirs() {
   ([ -d "${restoredir}" ] || make_restoredir)
   ([ -d "${restoretarget}" ] || make_target)
@@ -34,7 +41,7 @@ make_target() {
 }
 
 pull_files() {
-  rclone copy -vP "${backupdrive}":"${donorfilepath}/${donorfilename}" "${restoredir}" "${rflags}"
+  rclone copy -vP "${backupdrive}":"${donorfilepath}/${donorfilename}" "${restoredir}" "${rflags[@]}"
 }
 
 dockerinstalled() {
@@ -86,8 +93,9 @@ exiting() {
 
 #______________ SET LIST
 
+check_root
 check_for_dirs
-pullfiles
+pull_files
 dockerinstalled
 dockcheck
 extractomate

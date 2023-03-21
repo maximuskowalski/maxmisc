@@ -29,7 +29,7 @@ bkupdir="/home/${myusername}/maxmisc/backups"         # directory for temporary 
 restoredir="/home/${myusername}/maxmisc/restores"     # directory for temporary restore data
 today=$(date '+%Y_%d_%m__%H_%M_%S')                   # date stamp
 logsdir="/home/${myusername}/logs"                    # directory for logs
-rflags="--drive-chunk-size=2048M --buffer-size 8192M" # rclone file transfer flags
+rflags=(--drive-chunk-size=2048M --buffer-size=8192M) # rclone file transfer flags
 
 # some colours
 bred="$(tput setaf 9)"   # bright red
@@ -170,6 +170,7 @@ sysapps="rclone_vfs mergerfs munter" # system services, separate with spaces.
 # Define multiple apps
 # three fields separated by |:
 # app name, app data directory, and Docker container name
+# app data direcotry is expected to be nested in $[appdir] eg ( /opt )
 # if app is not using docker then leave container name field blank
 
 apps=(

@@ -55,7 +55,7 @@ start_docker_container() {
 }
 
 upload_backup() {
-    rclone copy -vP "${bkupdir}"/"${appname}"_"${thisserver}".tar.gz "${backupdrive}":/backups/"${thisserver}"/ "${rflags}"
+    rclone copy -vP "${bkupdir}/${archive_name}" "${backupdrive}":/backups/"${thisserver}"/ "${rflags[@]}"
 }
 
 print_archive_details() {
