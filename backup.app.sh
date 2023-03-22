@@ -44,7 +44,9 @@ create_backup_directory() {
 }
 
 create_archive() {
-    tar -chzvf "${bkupdir}"/"${appname}"_"${thisserver}".tar.gz -C "${appdir}" "${appdatadir}"
+    local archive_name="${bkupdir}/${appname}_${thisserver}.tar.gz"
+    tar -chzvf "${archive_name}" -C "${appdir}" "${appdatadir}"
+    echo "${archive_name}"
 }
 
 start_docker_container() {
@@ -84,13 +86,11 @@ backup_app() {
 
 main() {
     check_root
-    dockerinstalled
 
     all_archive_details=""
     for app_info in "${apps[@]}"; do
         IFS="|" read -r appname appdatadir appdockername <<<"${app_info}"
         echo "Backing up ${appname}..."
-        dockcheck
         backup_app
     done
 
