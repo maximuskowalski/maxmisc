@@ -169,16 +169,16 @@ sysapps="rclone_vfs mergerfs munter" # system services, separate with spaces.
 
 # Define multiple apps
 # three fields separated by |:
-# app name, app data directory, and Docker container name
-# app data direcotry is expected to be nested in $[appdir] eg ( /opt )
-# if app is not using docker then leave container name field blank
+# field 1: app name ( for file naming only),
+# field 2: app data directory, expected to be nested in $[appdir] eg ( /opt ),
+# field 3: Docker container name - to stop and start container
+# if app does not using docker then just leave container name field blank
 
 apps=(
-  "plex|plex|plex"
-  "app2|app2_data|app2_docker"
-  "app3|app3_data|app3_docker"
+    "atrain|atrain|a-train"
+    "sa|sa|"
+    "prowlarr|prowlarr|prowlarr"
 )
-
 
 appname="plex"       # name of your app - used in filename
 appdatadir="plex"    # appdir to backup
@@ -190,6 +190,6 @@ donorappname="plex"         # name of the app you want restored
 restoreappdockername="plex" # name of your app docker - to stop and start
 
 # these are auto config, you probably don't need to edit
-donorfilepath=/backups/$donorserver     # Path on rclone remote to the donor file
+donorfilepath=/miscbackups/$donorserver # Path on rclone remote to the donor file
 donorfilename=$donorappname.tar.gz      # Name of file to restore
 restoretarget="${appdir}/${appdatadir}" # location app will restore to

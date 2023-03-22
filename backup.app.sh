@@ -14,6 +14,7 @@
 # - Support for multiple apps and non-docker apps data
 # - Include necessary variables in the output message and file for restore
 # - Convert to functions for better code interchangeability
+# - Make backup dir on remote a variable?
 
 IFS=$'\n\t'
 
@@ -55,13 +56,21 @@ start_docker_container() {
 }
 
 upload_backup() {
-    rclone copy -vP "${bkupdir}/${archive_name}" "${backupdrive}":/backups/"${thisserver}"/ "${rflags[@]}"
+    rclone copy -vP "${bkupdir}/${archive_name}" "${backupdrive}":/miscbackups/"${thisserver}"/ "${rflags[@]}"
 }
 
 print_archive_details() {
-    echo "Uploaded archive details:"
-    echo "Name: ${appname}_${thisserver}.tar.gz"
-    echo "Path: ${backupdrive}:/backups/${thisserver}/"
+    local details="Archive details for ${appname}:
+    - Archive name: ${archive_name}
+    - Source path: ${appdir}/${appdatadir}
+    - Destination path: ${backupdrive}:/miscbackups/${thisserver}/${archive_name}
+    "
+    all_archive_details+="${details}\n"
+}
+
+print_all_archive_details() {
+    echo -e "\nAll archive details:"
+    echo -e "${all_archive_details}"
 }
 
 backup_app() {
@@ -77,11 +86,15 @@ main() {
     check_root
     dockerinstalled
 
+    all_archive_details=""
     for app_info in "${apps[@]}"; do
         IFS="|" read -r appname appdatadir appdockername <<<"${app_info}"
         echo "Backing up ${appname}..."
+        dockcheck
         backup_app
     done
+
+    print_all_archive_details
 }
 
 #________ EXECUTION
