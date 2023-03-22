@@ -59,7 +59,7 @@ start_docker_container() {
 
 upload_backup() {
     echo "DEBUG: Uploading archive: ${bkupdir}/${archive_name}"
-    rclone copy -vP "${bkupdir}/${archive_name}" "${backupdrive}":/miscbackups/"${thisserver}"/ "${rflags[@]}"
+    rclone copy -vP "${bkupdir}/"${archive_name}"" "${backupdrive}":/miscbackups/"${thisserver}"/ "${rflags[@]}"
 }
 
 print_archive_details() {
