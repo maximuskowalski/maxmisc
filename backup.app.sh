@@ -78,6 +78,7 @@ print_all_archive_details() {
 backup_app() {
     stop_docker_container
     create_backup_directory
+    local archive_name
     archive_name=$(create_archive)
     start_docker_container
     upload_backup
