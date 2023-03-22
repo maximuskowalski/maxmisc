@@ -60,11 +60,11 @@ upload_backup() {
 }
 
 print_archive_details() {
+    local archive_name=$1
     local details="Archive details for ${appname}:
     - Archive name: ${archive_name}
     - Source path: ${appdir}/${appdatadir}
-    - Destination path: ${backupdrive}:/miscbackups/${thisserver}/${archive_name}
-    "
+    - Destination path: ${backupdrive}:/backups/${thisserver}/${archive_name}"
     all_archive_details+="${details}\n"
 }
 
@@ -76,10 +76,10 @@ print_all_archive_details() {
 backup_app() {
     stop_docker_container
     create_backup_directory
-    create_archive
+    archive_name=$(create_archive)
     start_docker_container
     upload_backup
-    print_archive_details
+    print_archive_details "${archive_name}"
 }
 
 main() {
