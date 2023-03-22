@@ -44,8 +44,8 @@ create_backup_directory() {
 }
 
 create_archive() {
-    local archive_name="${bkupdir}/${appname}_${thisserver}.tar.gz"
-    tar -chzvf "${archive_name}" -C "${appdir}" "${appdatadir}"
+    local archive_name="${appname}_${thisserver}.tar.gz"
+    tar -chzvfq "${bkupdir}/${archive_name}" -C "${appdir}" "${appdatadir}"
     echo "${archive_name}"
 }
 
@@ -58,11 +58,13 @@ start_docker_container() {
 }
 
 upload_backup() {
+    echo "DEBUG: Uploading archive: ${bkupdir}/${archive_name}"
     rclone copy -vP "${bkupdir}/${archive_name}" "${backupdrive}":/miscbackups/"${thisserver}"/ "${rflags[@]}"
 }
 
 print_archive_details() {
     local archive_name=$1
+    echo "DEBUG: Printing archive details for ${archive_name}"
     local details="Archive details for ${appname}:
     - Archive name: ${archive_name}
     - Source path: ${appdir}/${appdatadir}
@@ -76,6 +78,7 @@ print_all_archive_details() {
 }
 
 backup_app() {
+    echo "stopping docker container if needed"
     stop_docker_container
     create_backup_directory
     local archive_name
