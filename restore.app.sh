@@ -88,11 +88,15 @@ dockcheck() {
 
 # Extract the backup archive to the target directory
 extractomate() {
+  local appname=$1
+  local donorfilename="${appname}_${donorserver}.tar.gz"
   tar -xvzf "${restoredir}/${donorfilename}" -C "${appdir}"
 }
 
 # Start the Docker container if it exists
 dockstart() {
+  local restoreappdockername=$1
+
   if [ "$dockexist" = true ]; then
     docker start "${restoreappdockername}"
   else
@@ -113,8 +117,8 @@ restore_app() {
   pull_files "${appname}"
   dockerinstalled
   dockcheck "${restoreappdockername}"
-  extractomate
-  dockstart
+  extractomate "${appname}"
+  dockstart "${restoreappdockername}"
   exiting
 }
 
