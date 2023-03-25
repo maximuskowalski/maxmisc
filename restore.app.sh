@@ -104,11 +104,20 @@ dockstart() {
   fi
 }
 
+print_restore_details() {
+  local appname=$1
+  local donorfilename="${appname}_${donorserver}.tar.gz"
+  local details="Restore details for ${appname}:
+    - Archive name: ${donorfilename}
+    - Source path: ${backupdrive}:${donorfilepath}/${donorfilename}
+    - Destination path: ${appdir}/${appdatadir}"
+  all_restore_details+="${details}\n"
+}
+
 # Print a message indicating the restore process is complete
-exiting() {
-  echo
-  echo "restore complete"
-  echo
+print_all_restore_details() {
+  echo -e "\nAll restore details:"
+  echo -e "${all_restore_details}"
 }
 
 # Restore the app
@@ -119,7 +128,7 @@ restore_app() {
   dockcheck "${restoreappdockername}"
   extractomate "${appname}"
   dockstart "${restoreappdockername}"
-  exiting
+  print_restore_details "${appname}"
 }
 
 # Main function to run the restore script
@@ -131,6 +140,8 @@ main() {
     echo "Restoring ${appname}..."
     restore_app
   done
+
+  print_all_restore_details
 }
 
 #________ EXECUTION
