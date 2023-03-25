@@ -101,7 +101,7 @@ main() {
     check_root
 
     all_archive_details=""
-    for app_info in "${apps[@]}"; do
+    for app_info in "${backup_apps[@]}"; do
         IFS="|" read -r appname appdatadir appdockername <<<"${app_info}"
         echo "Backing up ${appname}..."
         backup_app
