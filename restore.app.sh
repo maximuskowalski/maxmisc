@@ -49,7 +49,7 @@ make_target() {
 # Download the backup archive from the remote location
 pull_files() {
   local appname=$1
-  local donorfilename="${appname}_${thisserver}.tar.gz"
+  local donorfilename="${appname}_${donorserver}.tar.gz"
   rclone copy -vP "${backupdrive}":"${donorfilepath}/${donorfilename}" "${restoredir}" "${rflags[@]}"
 }
 
