@@ -28,6 +28,8 @@ check_root() {
 
 # Check for necessary directories and create them if they don't exist
 check_for_dirs() {
+  local restoreappdatadir=$1
+  restoretarget="${appdir}/${restoreappdatadir}"
   ([ -d "${restoredir}" ] || make_restoredir)
   ([ -d "${restoretarget}" ] || make_target)
 }
@@ -46,6 +48,8 @@ make_target() {
 
 # Download the backup archive from the remote location
 pull_files() {
+  local appname=$1
+  local donorfilename="${appname}_${thisserver}.tar.gz"
   rclone copy -vP "${backupdrive}":"${donorfilepath}/${donorfilename}" "${restoredir}" "${rflags[@]}"
 }
 
@@ -66,6 +70,8 @@ dockerinstalled() {
 # TODO: how to deal with no docker at all causing command failure
 # shellcheck disable=SC1073
 dockcheck() {
+  local restoreappdockername=$1
+
   if [ $dockerinst = true ] && [ -n "${restoreappdockername}" ]; then
     if [ "$(docker ps -a -q -f name="${restoreappdockername}")" ]; then
       dockexist="true"
@@ -103,10 +109,10 @@ exiting() {
 
 # Restore the app
 restore_app() {
-  check_for_dirs
-  pull_files
+  check_for_dirs "${restoreappdatadir}"
+  pull_files "${appname}"
   dockerinstalled
-  dockcheck
+  dockcheck "${restoreappdockername}"
   extractomate
   dockstart
   exiting
@@ -117,7 +123,7 @@ main() {
   check_root
 
   for app_info in "${restore_apps[@]}"; do
-    IFS="|" read -r appname appdatadir appdockername <<<"${app_info}"
+    IFS="|" read -r appname restoreappdatadir restoreappdockername <<<"${app_info}"
     echo "Restoring ${appname}..."
     restore_app
   done

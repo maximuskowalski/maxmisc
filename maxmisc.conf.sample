@@ -25,8 +25,8 @@ donorserver="osiris"    # name of the server app data will be restored from, eg 
 webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # these are auto config, you probably don't need to edit
-bkupdir="/home/${myusername}/maxmisc/backups"         # directory for temporary backup data
-restoredir="/home/${myusername}/maxmisc/restores"     # directory for temporary restore data
+bkupdir="/home/${myusername}/misc/backups"         # directory for temporary backup data
+restoredir="/home/${myusername}/misc/restores"     # directory for temporary restore data
 today=$(date '+%Y_%d_%m__%H_%M_%S')                   # date stamp
 logsdir="/home/${myusername}/logs"                    # directory for logs
 rflags=(--drive-chunk-size=2048M --buffer-size=8192M) # rclone file transfer flags
@@ -204,5 +204,5 @@ restore_apps=(
 
 # these are auto config, you probably don't need to edit
 donorfilepath=/miscbackups/$donorserver # Path on rclone remote to the donor file
-donorfilename=$donorappname.tar.gz      # Name of file to restore
-restoretarget="${appdir}/${appdatadir}" # location app will restore to
+# donorfilename=$donorappname.tar.gz      # Name of file to restore
+# restoretarget="${appdir}/${appdatadir}" # location app will restore to
