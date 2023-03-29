@@ -47,6 +47,10 @@ create_crop_directory() {
 
 # Fetch the required binaries and sample configuration
 fetch_binaries() {
+  # Download and install crop
+  wget -c "${crop_latest_release_url}" -O "${cropmntpnt}"/crop
+  chmod +x "${cropmntpnt}"/crop
+
   # Download and install lclone
   wget -c "${lclone_latest_release_url}" -O "${cropmntpnt}"/lclone
   chmod +x "${cropmntpnt}"/lclone
@@ -66,6 +70,9 @@ fetch_binaries() {
   mv "${cropmntpnt}"/gclone-*-linux-amd64/gclone "${cropmntpnt}"/gclone
   chmod +x "${cropmntpnt}"/gclone
   rm -rf "${cropmntpnt}"/gclone-*-linux-amd64
+
+  # Download sample config file
+  wget -c "${crop_sample_config}" -O "${cropmntpnt}"/config.yaml.sample
 }
 
 # Print helpful information about crop and the sample configuration
