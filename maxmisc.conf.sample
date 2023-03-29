@@ -87,6 +87,17 @@ cropname="crop" # crop name
 # auto config, you probably don't need to edit
 cropmntpnt="${appdir}/${cropname}" # the directory into which crop will be installed
 
+crop_latest_release_url=https://github.com/l3uddz/crop/releases/download/v1.0.1/crop_v1.0.1_linux_amd64
+
+lclone_latest_release_url=https://raw.githubusercontent.com/maximuskowalski/getw/main/files/lclone
+
+fclone_latest_release_url=https://github.com/mawaya/rclone/releases/download/fclone-v0.4.1/fclone-v0.4.1-linux-amd64.zip
+
+gclone_releases_page=$(curl -s "https://github.com/dogbutcat/gclone/releases")
+gclone_latest_release_url=$(echo "$gclone_releases_page" | grep -oP 'https://github.com/dogbutcat/gclone/releases/download/v[0-9]+\.[0-9]+\.[0-9]+-mod[0-9]+\.[0-9]+/gclone-v[0-9]+\.[0-9]+\.[0-9]+-mod[0-9]+\.[0-9]+-linux-amd64\.zip' | head -n 1)
+
+crop_sample_config=https://raw.githubusercontent.com/maximuskowalski/getw/main/files/crop_config_sample.yml
+
 #________for sarotund.sh
 #________for sarotup.sh
 
@@ -190,6 +201,8 @@ backup_apps=(
 # three fields separated by |:
 # field 1: donor app name ( for finding file name),
 # field 2: app data destination directory, expected to be nested in $[appdir] eg ( /opt ),
+# This is not actually used, but is it easier to copy the data from a backup
+# and avoid a dir name being used as a docker name.
 # field 3: Docker container name - to stop and start container
 # if app does not using docker then just leave container name field blank
 

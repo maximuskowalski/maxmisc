@@ -1,74 +1,103 @@
 #!/usr/bin/env bash
 # https://github.com/maximuskowalski/maxmisc/blob/master/cropduster.sh
-# a crop installer
+# Crop installer
 # https://github.com/l3uddz/crop
 
-set -Eeuo pipefail
-IFS=$'\n\t'
+# shellcheck disable=SC2154
 
+#________ DEV
+# set -x
+# set -Eeuo pipefail
+
+#______________
+
+# TODO:
 # Grab service files? - user problem?
 # config... too hard for now
+# grab other xClones?
+# edit crop sample config to include extra clone examples
+
+# IFS for safer handling of filenames and paths
+IFS=$'\n\t'
 
 #________ VARS
+# Source the configuration file
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
-
-# cropname=crop
-# appdir=/opt
-
-#________ DONT CHANGE
-
-# cropmntpnt=${appdir}/${cropname}
 
 #________ FUNCTIONS
 
-rooter() {
-    if [ "$(whoami)" = root ]; then
-        echo " Running as root or with sudo is not supported. Exiting."
-        exit
-    fi
+# Check if the script is run as root
+check_root() {
+  if [ "$(whoami)" = root ]; then
+    echo "Running as root or with sudo is not supported. Exiting."
+    exit
+  fi
 }
 
-checkoff() {
-  ([ -d "${cropmntpnt}" ] || dirmkr)
+# Check if the crop directory exists, create it if not
+check_and_create_crop_directory() {
+  ([ -d "${cropmntpnt}" ] || create_crop_directory)
 }
 
-dirmkr() {
+# Create the crop directory and set ownership to the current user
+create_crop_directory() {
   sudo mkdir -p "${cropmntpnt}" && sudo chown "${USER}":"${USER}" "${cropmntpnt}"
 }
 
-fetching() {
-  wget  -c https://github.com/l3uddz/crop/releases/download/v1.0.1/crop_v1.0.1_linux_amd64 -O ${cropmntpnt}/crop
-  chmod +x ${cropmntpnt}/crop
-  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/lclone -O ${cropmntpnt}/lclone
-  chmod +x ${cropmntpnt}/lclone
-  wget  -c https://raw.githubusercontent.com/maximuskowalski/getw/main/files/crop_config_sample.yml -O ${cropmntpnt}/config.yaml.sample
-  }
+# Fetch the required binaries and sample configuration
+fetch_binaries() {
+  # Download and install crop
+  wget -c "${crop_latest_release_url}" -O "${cropmntpnt}"/crop
+  chmod +x "${cropmntpnt}"/crop
 
-messaging() {
+  # Download and install lclone
+  wget -c "${lclone_latest_release_url}" -O "${cropmntpnt}"/lclone
+  chmod +x "${cropmntpnt}"/lclone
+
+  # Download and install fclone
+  wget -c "${fclone_latest_release_url}" -O "${cropmntpnt}"/fclone.zip
+  unzip -o "${cropmntpnt}"/fclone.zip -d "${cropmntpnt}"
+  rm "${cropmntpnt}"/fclone.zip
+  chmod +x "${cropmntpnt}"/fclone
+
+  # Download and install gclone
+  wget -c "${gclone_latest_release_url}" -O "${cropmntpnt}"/gclone.zip
+  unzip -o "${cropmntpnt}"/gclone.zip -d "${cropmntpnt}"
+  rm "${cropmntpnt}"/gclone.zip
+  chmod +x "${cropmntpnt}"/gclone
+
+  # Download sample config file
+  wget -c "${crop_sample_config}" -O "${cropmntpnt}"/config.yaml.sample
+}
+
+# Print helpful information about crop and the sample configuration
+print_help_message() {
   echo
   echo "    For documentation see"
   echo "    https://github.com/l3uddz/crop"
   echo
-  echo "    a sample configuration is files is located here"
+  echo "    A sample configuration file is located here"
   echo "    ${cropmntpnt}/config.yaml.sample"
-  echo "    copy and edit or create ${cropmntpnt}/config.yaml"
+  echo "    Copy and edit or create ${cropmntpnt}/config.yaml"
   echo
 }
 
-fin() {
+# Print the final message indicating the completion of the installation
+print_completion_message() {
   echo
   echo "    **************************"
   echo "    * ---------------------- *"
-  echo "    * - install completed! - *"
+  echo "    * - Install completed! - *"
   echo "    * ---------------------- *"
   echo "    **************************"
   echo
 }
 
-#________ RUNLIST
+#________ MAIN
 
-rooter
-checkoff
-fetching
-messaging
-fin
+check_root
+check_and_create_crop_directory
+fetch_binaries
+print_help_message
+print_completion_message
