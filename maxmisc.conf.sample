@@ -93,8 +93,7 @@ lclone_latest_release_url=https://raw.githubusercontent.com/maximuskowalski/getw
 
 fclone_latest_release_url=https://github.com/mawaya/rclone/releases/download/fclone-v0.4.1/fclone-v0.4.1-linux-amd64.zip
 
-gclone_releases_page=$(curl -s "https://github.com/dogbutcat/gclone/releases")
-gclone_latest_release_url=$(echo "$gclone_releases_page" | grep -oP 'https://github.com/dogbutcat/gclone/releases/download/v[0-9]+\.[0-9]+\.[0-9]+-mod[0-9]+\.[0-9]+/gclone-v[0-9]+\.[0-9]+\.[0-9]+-mod[0-9]+\.[0-9]+-linux-amd64\.zip' | head -n 1)
+gclone_latest_release_url=https://github.com/dogbutcat/gclone/releases/download/v1.62.0-mod1.5.1/gclone-v1.62.0-mod1.5.1-linux-amd64.zip
 
 crop_sample_config=https://raw.githubusercontent.com/maximuskowalski/getw/main/files/crop_config_sample.yml
 
