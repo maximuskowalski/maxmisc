@@ -155,6 +155,12 @@ declare -A danger_strings=(
 
 num_lines=100 # Number of lines to tail from a log file
 
+#________for SPACEMAN.sh
+
+space_path="/mnt/local/"
+min_space_threshold=20
+spaceman_logfile="${logsdir}/spaceman.log"
+
 #________for STRAPON.sh
 
 # JUST LEAVE OUT FOR NOW
@@ -165,7 +171,7 @@ num_lines=100 # Number of lines to tail from a log file
 anchor=audiobooks,td_tv1.bin,td_movies.bin # anchor files, use commas to separate (a directory is also a file)
 dir="/mnt/unionfs"                         # location of anchor files
 sapps="plex emby jellyfin"                 # docker service apps, separate with spaces.
-wanchlog="/home/max/logs/wanch.log"        # logfile
+wanchlog="${logsdir}/wanch.log"        # logfile
 
 #________for WANCH PLUS.sh
 
