@@ -31,25 +31,38 @@ source "$(dirname "$0")/maxmisc.conf"
 
 # Check the disk space
 check_space() {
+    # Get the disk space usage information for the specified path and extract the available space and usage percentage
     df_result=$(df -h --output=avail,pcent,target "$space_path" | tail -1)
-    free_space_percentage=$(echo "$df_result" | awk '{print $2}' | sed 's/%//')
+    echo "$(date): DFR= $df_result" >>"$spaceman_logfile"
+    free_space_percentage=$(echo "$df_result" | awk '{print 100 - $2}' | sed 's/%//')
+    echo "$(date): FSP = $free_space_percentage" >>"$spaceman_logfile"
     free_space_human=$(echo "$df_result" | awk '{print $1}')
+    echo "$(date): FSH = $free_space_human" >>"$spaceman_logfile"
 }
 
 # Send a notification using Apprise
 send_notification() {
-    message="Warning! Free space on $thisserver has fallen below $min_space_threshold%. Only $free_space_human remaining. The largest subdirectory is $largest_subdir occupying $largest_size."
-    apprise -b "$message" -t "Low Disk Space Alert on $thisserver" "$webhook_url"
+    # Compose the notification message with information about the server, free space, and largest subdirectory
+    message="@everyone<br />**Warning!**<br />Free space on $thisserver has fallen below $min_space_threshold%.<br />Only $free_space_human remaining.<br />The largest subdirectory is $largest_subdir occupying $largest_size."
 
-    # Log the notification with a timestamp
+    # Send the notification message to the specified webhook URL using Apprise
+    apprise --input-format=html -b "$message" -t "**Low Disk Space Alert** on $thisserver" "$webhook_url"
+
+    # Log the notification with a timestamp in the specified log file
     echo "$(date): $message" >>"$spaceman_logfile"
 }
 
 # Find the largest subdirectory
 find_largest_subdir() {
+    # Get the disk space usage information for all directories under the specified path, sort by size in descending order, and extract the largest subdirectory information
     largest_subdir_info=$(du -hsx "$space_path"/* 2>/dev/null | sort -rh | head -n 1)
+    echo "$(date): L_SD_Info= $largest_subdir_info" >>"$spaceman_logfile"
+
     largest_size=$(echo "$largest_subdir_info" | awk '{print $1}')
+    echo "$(date): LG_SZ= $largest_size" >>"$spaceman_logfile"
+
     largest_subdir=$(echo "$largest_subdir_info" | awk '{$1=""; print $0}' | sed 's/^ *//')
+    echo "$(date): LG_SD= $largest_subdir" >>"$spaceman_logfile"
 }
 
 # Evaluate the disk space and send a notification if it's below the threshold

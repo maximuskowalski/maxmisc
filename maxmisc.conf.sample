@@ -157,9 +157,11 @@ num_lines=100 # Number of lines to tail from a log file
 
 #________for SPACEMAN.sh
 
-space_path="/mnt/local/"
-min_space_threshold=20
-spaceman_logfile="${logsdir}/spaceman.log"
+space_path="/mnt/local" # Define the path to monitor for disk space usage
+min_space_threshold=20 # Define the minimum free space threshold percentage, below which a notification will be sent
+
+spaceman_logfile="${logsdir}/spaceman.log" # location of the spaceman log file
+
 
 #________for STRAPON.sh
 
