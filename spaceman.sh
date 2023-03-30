@@ -21,11 +21,11 @@ IFS=$'\n\t'
 # shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
 
-space_path="/mnt/local/"
-thisserver="maxical"
-min_space_threshold=20
-webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-spaceman_logfile="${logsdir}/spaceman.log"
+# space_path="/mnt/local/"
+# thisserver="maxical"
+# min_space_threshold=20
+# webhook_url="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# spaceman_logfile="${logsdir}/spaceman.log"
 
 #________ FUNCTIONS
 
