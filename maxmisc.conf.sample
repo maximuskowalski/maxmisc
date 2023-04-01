@@ -30,6 +30,8 @@ restoredir="/home/${myusername}/misc/restores"     # directory for temporary res
 today=$(date '+%Y_%d_%m__%H_%M_%S')                   # date stamp
 logsdir="/home/${myusername}/logs"                    # directory for logs
 rflags=(--drive-chunk-size=2048M --buffer-size=8192M) # rclone file transfer flags
+backup_suffix=".bak" # suffix to use for backup files
+sql_timeout=2000     # timeout for SQL commands
 
 # some colours
 bred="$(tput setaf 9)"   # bright red
@@ -55,6 +57,7 @@ plexsql="/opt/plexsql/Plex Media Server"                           # path to ple
 
 # plex DB and metadata location, absolute paths
 # these are auto config, you probably don't need to edit
+
 plexdb="com.plexapp.plugins.library.db"        # don't change
 plexdblocation="${plexdbpath}${plexdb}"        # location of plex database
 plexmdlocation="${pmspath}Metadata"            # location of plex metadata
