@@ -4,6 +4,10 @@
 # sniffs the latest logs and searches for a predefined string, sends a notification to advise when found.
 # requires apprise.
 
+# Cron entry to run the script every 30 mins:
+# */30 * * * * /bin/bash /opt/scripts/misc/maxmisc/logWhiffer.sh" >/dev/null 2>&1
+# Add this entry to your user's crontab using crontab -e command.
+
 #________ NOTES
 
 # remember to exclude temp dir from github

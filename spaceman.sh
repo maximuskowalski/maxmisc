@@ -4,7 +4,7 @@
 # Monitors a drive for low disk space and sends a notification if the free space falls below a certain threshold.
 
 # Cron entry to run the script hourly:
-# 0 * * * * /opt/scripts/misc/maxmisc/spaceman.sh
+# 0 * * * * /bin/bash /opt/scripts/misc/maxmisc/spaceman.sh" >/dev/null 2>&1
 # Add this entry to your user's crontab using crontab -e command.
 
 # shellcheck disable=SC2154
