@@ -17,9 +17,9 @@
 
 # shellcheck disable=SC2154
 
+#________ DEV
 # set -x
-
-set -Eeuo pipefail
+# set -Eeuo pipefail
 
 IFS=$'\n\t'
 
