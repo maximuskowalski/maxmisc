@@ -62,13 +62,17 @@ plexdb="com.plexapp.plugins.library.db"        # don't change
 plexdblocation="${plexdbpath}${plexdb}"        # location of plex database
 plexmdlocation="${pmspath}Metadata"            # location of plex metadata
 plextrnsfrdb="${bkupdir}/${plexdb}.trnsfrbkup" # location of plex db backupfile for transfer
+plexrstrdb="${restoredir}/${plexdb}.trnsfrbkup" # location of plex db backupfile for restore
 
 #________for plex_transfer.sh only
 plexservername="imhotep" # name of your plex server - used in filename creation
 
 #________for plex_unpack.sh only
 plexbuservername="russell" # name of your plex server to restore FROM- used in filename
-bufromserver="hetzner01"   # name of your server to restore FROM, eg hetzner01
+
+# auto config, you probably don't need to edit
+plex_restore_archive_name="plex_${plexbuservername}_${donorserver}.tar.gz"
+plex_restoretarget="${appdir}/plex}"
 
 ########################
 # APP INSTALLERS
@@ -135,7 +139,6 @@ qakinfdir="${qkupdir}"/info                           # location for info
 qakfirstrun="${qakinfdir}"/quack.txt                  # first run info
 qakbakfile="${qakbakdir}"/config_backup"${TODAY}".zip # location for backup file
 
-# RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M" # THIS IS NOT USED / NOT WORKING
 
 #________for LOGWHIFFER.sh
 
@@ -144,6 +147,7 @@ qakbakfile="${qakbakdir}"/config_backup"${TODAY}".zip # location for backup file
 declare -A watched_logs=(
     ["crop"]="/opt/crop/activity.log"
     ["cloudplow"]="/opt/cloudplow/cloudplow.log"
+    ["saltbackup"]="/srv/git/saltbox/backup_rclone.log"
     ["autoscan"]="/opt/autoscan/activity.log"
 
 )
@@ -201,10 +205,6 @@ backup_apps=(
     "prowlarr|prowlarr|prowlarr"
 )
 
-# appname="plex"       # name of your app - used in filename
-# appdatadir="plex"    # appdir to backup
-# appdockername="plex" # name of your app docker - to stop and start
-
 #________for RESTORE APP.sh
 
 # Define multiple apps
@@ -222,8 +222,6 @@ restore_apps=(
     "prowlarr|prowlarr|prowlarr"
 )
 
-# donorappname="plex"         # name of the app you want restored
-# restoreappdockername="plex" # name of your app docker - to stop and start
 
 # these are auto config, you probably don't need to edit
 donorfilepath=/miscbackups/$donorserver # Path on rclone remote to the donor file

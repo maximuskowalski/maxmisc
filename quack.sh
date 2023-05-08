@@ -1,57 +1,53 @@
 #!/usr/bin/env bash
 # https://github.com/maximuskowalski/maxmisc/blob/master/quack.sh
 
-# RIP discduck
+# quack is a quick backup tool for configuration files and scripts from your Saltbox installations.
+# It is not a complete Saltbox backup solution.
+# The script takes care of backing up user crontab, system information, and specific files or directories as set in the configuration file.
 
-# an incremental small config files backerupperer for
-# your little fu's. After learning of the death of "disco"duck I might rename this quack
-# quack is a quick back up of config files and scripts from my saltbox installs.
-# it is not a saltbox backup by any means.
+# RIP discduck
+# After learning of the death of "disco"duck I have renamed this quack
 
 #________ NOTES
 
 # USE FUNCTIONS WE MAY HAVE SOME true FALSE switches
-# USE .conf for VARS?
-# . /opt/scripts/maxmisc/fureverso.conf
-# And for a list of files to backup
-# copy sample file to same dir
-# filelist.txt
-# MAKE DIRS FOR BACKUPS, LOGS, STUFF?
 # Reduce dir depths, eg saltbox
 
-#________ VARS ( MAY GO TO CONFIG FILE ( REPO WIDE))
+# shellcheck disable=SC2154
 
+#________ DEV
+# set -x
+# set -Eeuo pipefail
+
+# IFS for safer handling of filenames and paths
+IFS=$'\n\t'
+
+#________ VARIABLES
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
 
-# fileslist=filelist.txt
-# filtlist=filtlist.txt
-# ziplist=ziplist.txt
+#________ FUNCTIONS
 
-# qkupdir=/home/"${myusername}"/quack
+# Exit if the script is running as root or with sudo
+check_root() {
+    if [ "$(id -u)" = 0 ]; then
+        echo "Running as root or with sudo is not supported. Exiting."
+        exit 1
+    fi
+}
 
-# SUBSET
-# qaktmpdir="${qkupdir}"/files
-# qakzipsdir="${qkupdir}"/zips
-# qakbakdir="${qkupdir}"/backups
-# qakinfdir="${qkupdir}"/info
+# check for existence
+checkoff() {
+    ([ -d "${qkupdir}" ] || dirmaker)
+    ([ -e "${qakfirstrun}" ] || setup)
+}
 
-# qakfirstrun="${qakinfdir}"/quack.txt
+# make our destination dirs
+dirmaker() {
+    mkdir -p {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"} && sudo chown "${myusername}":"${myusername}" {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"}
+}
 
-# today=$(date '+%Y_%d_%m__%H_%M_%S')
-# qakbakfile="${qakbakdir}"/config_backup"${today}".zip
-
-# UPLOADER
-# qakupload=true
-# backupdrive=maxbackup
-# thisserver=maxical
-# RFLAGS="--drive-chunk-size=2048M --buffer-size 8192M"
-
-#________ ACTIONS
-
-# backup user crontab & grab kernel & neofetch info
-# this is to test versioning and probably should not be part of script when complete
-# neofetch should be config for plain text output
-
+# Temporary actions: crontab and system information
 tempactions() {
     crontab -l >"${qaktmpdir}"/mycron
     uname -a >"${qaktmpdir}"/system.txt
@@ -74,30 +70,6 @@ tempactions() {
     echo 'df info' >>"${qaktmpdir}"/system.txt
     echo '################' >>"${qaktmpdir}"/system.txt
     df -h >>"${qaktmpdir}"/system.txt
-}
-
-#________ FUNCTIONS
-
-# check for root runners
-rooter() {
-    if [ "$(whoami)" = root ]; then
-        echo "Running as root or with sudo is not supported. Exiting."
-        exit
-    fi
-}
-
-# check for existence
-checkoff() {
-    ([ -d "${qkupdir}" ] || dirmaker)
-    ([ -e "${qakfirstrun}" ] || setup)
-    # check for zip / neofetch installs?
-}
-
-# make our destination dirs
-dirmaker() {
-    # mkdir -p "${qkupdir}" && sudo chown "${myusername}":"${myusername}" "${qkupdir}"
-    mkdir -p {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"} && sudo chown "${myusername}":"${myusername}" {"${qkupdir}","${qaktmpdir}","${qakzipsdir}","${qakbakdir}","${qakinfdir}"}
-
 }
 
 # make copies of files in "${fileslist}" or "${filtlist}"
@@ -162,7 +134,7 @@ zipper() {
 # logrotator should be in place already?
 
 setup() {
-    # create the rotator
+    # create the rotator - move this to my setup script (strapon.sh)
     # rotatormator # not currently used, file rotate happens every script run
     # create the firstrun.txt file
     firstfile
@@ -219,14 +191,18 @@ fin() {
     echo
 }
 
-#______________ RUNLIST
+main() {
+    check_root
+    checkoff
+    tempactions
+    arrsinker
+    dirzip
+    zipper
+    alternator
+    uploader
+    fin
+}
 
-rooter
-checkoff # this will run dirmaker if needed
-tempactions
-arrsinker # rsync switches
-dirzip
-zipper
-alternator # testing - may go back to logrotate
-uploader
-fin
+#________ EXECUTION
+
+main
