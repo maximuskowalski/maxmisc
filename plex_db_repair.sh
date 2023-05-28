@@ -41,6 +41,14 @@ vacuum_reindex_plex_db() {
 .timeout ${sql_timeout}
 VACUUM;
 REINDEX;
+# PRAGMA integrity_check;
+# REPAIR OPTS MORE SERIOUS
+#
+# .output db-recover.sqlite
+# .recover
+#
+# move original file out of the way
+# .read db-recover.sqlite
 END_SQL
 }
 

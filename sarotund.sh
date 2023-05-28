@@ -3,51 +3,51 @@
 # an sarotate installer
 # https://github.com/saltydk/SARotate
 
-set -Eeuo pipefail
-IFS=$'\n\t'
-
+#________ NOTES
 # Grab service files dir
 # and semi config... maybe later
 # systemd? maybe var
 
-#________ VARS
+# shellcheck disable=SC2154
 
+#________ DEV
+# set -x
+# set -Eeuo pipefail
+
+# IFS for safer handling of filenames and paths
+IFS=$'\n\t'
+
+#________ VARIABLES
+# shellcheck source=/dev/null
 source "$(dirname "$0")/maxmisc.conf"
-
-# sarotatename=sarotate
-# appdir=/opt
-# sarsysdinst=true # creates systemd file and enables but does not start
-
-#________ DONT CHANGE
-
-# sarotatemntpnt=${appdir}/${sarotatename}
-
-# sarotateconfig="${sarotatemntpnt}/config.yaml.sample"
-
-# sarlink="$(curl -Ls "https://api.github.com/repos/saltydk/sarotate/releases/latest" | grep browser_download_url | cut -d '"' -f 4)"
 
 #________ FUNCTIONS
 
-rooter() {
-  if [ "$(whoami)" = root ]; then
-    echo "${BRED} Running as root or with sudo is not supported. Exiting.${RESET}"
-    exit
+# Exit if the script is running as root or with sudo
+check_root() {
+  if [ "$(id -u)" = 0 ]; then
+    echo "Running as root or with sudo is not supported. Exiting."
+    exit 1
   fi
 }
 
+# Check if the SARotate dir exists and create it if necessary
 checkoff() {
   ([ -d "${sarotatemntpnt}" ] || dirmkr)
 }
 
+# Create SARotate directory and set ownership
 dirmkr() {
   sudo mkdir -p "${sarotatemntpnt}" && sudo chown "${USER}":"${USER}" "${sarotatemntpnt}"
 }
 
+# Download SARotate from the latest GitHub release
 fetching() {
-  wget -c "${sarlink}" -O ${sarotatemntpnt}/SARotate
-  chmod +x ${sarotatemntpnt}/SARotate
+  wget -c "${sarlink}" -O "${sarotatemntpnt}"/SARotate
+  chmod +x "${sarotatemntpnt}"/SARotate
 }
 
+# Generate a sample SARotate configuration file
 configo() {
   cat >"${sarotateconfig}" <<EOF
 rclone:
@@ -74,12 +74,14 @@ notification:
 EOF
 }
 
+# Check if systemd is enabled and create the necessary files and enable the service
 sysdcheck() {
-    ([ $sarsysdinst = true ] && sysdmaker && enabler) || :
+  ([ "$sarsysdinst" = true ] && sysdmaker && enabler) || :
 }
 
+# Create and enable the SARotate systemd service and timer
 sysdmaker() {
-    sudo bash -c 'cat > /etc/systemd/system/sarotate.service' <<EOF
+  sudo bash -c 'cat > /etc/systemd/system/sarotate.service' <<EOF
 # /etc/systemd/system/sarotate.service
 [Unit]
 Description=sarotate
@@ -100,7 +102,7 @@ WantedBy=default.target
 
 EOF
 
-sudo bash -c 'cat > /etc/systemd/system/sarotate.timer' <<EOF
+  sudo bash -c 'cat > /etc/systemd/system/sarotate.timer' <<EOF
 # /etc/systemd/system/sarotate.timer
 [Unit]
 Description=sarotate boot delay
@@ -114,19 +116,21 @@ WantedBy=timers.target
 EOF
 }
 
+# Enable the SARotate systemd service and timer, and reload the daemon
 enabler() {
-    sudo systemctl enable sarotate.service && sudo systemctl enable sarotate.timer && sudo systemctl daemon-reload
-      echo
-      echo
-      echo
-      echo "    systemd file created and enabled"
-      echo "    WARNING: SARotate service will be"
-      echo "    started on the next reboot."
-      echo "    or after editing and comfirming valid config"
-      echo "    to start the system service manually now "
-      echo "    sudo systemctl start sarotate.service"
+  sudo systemctl enable sarotate.service && sudo systemctl enable sarotate.timer && sudo systemctl daemon-reload
+  echo
+  echo
+  echo
+  echo "    systemd file created and enabled"
+  echo "    WARNING: SARotate service will be"
+  echo "    started on the next reboot."
+  echo "    or after editing and comfirming valid config"
+  echo "    to start the system service manually now "
+  echo "    sudo systemctl start sarotate.service"
 }
 
+# Display information on how to use and configure SARotate
 messaging() {
   echo
   echo "    For documentation see"
@@ -139,6 +143,7 @@ messaging() {
   echo
 }
 
+# Display a message indicating the installation is complete
 fin() {
   echo
   echo "    **************************"
@@ -149,12 +154,16 @@ fin() {
   echo
 }
 
-#________ RUNLIST
+main() {
+  rooter
+  checkoff
+  fetching
+  configo
+  sysdcheck
+  messaging
+  fin
+}
 
-rooter
-checkoff
-fetching
-configo
-sysdcheck
-messaging
-fin
+#________ EXECUTION
+
+main

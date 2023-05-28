@@ -165,7 +165,7 @@ num_lines=100 # Number of lines to tail from a log file
 #________for SPACEMAN.sh
 
 space_path="/mnt/local" # Define the path to monitor for disk space usage
-min_space_threshold=20 # Define the minimum free space threshold percentage, below which a notification will be sent
+min_space_threshold=20  # Define the minimum free space threshold percentage, below which a notification will be sent
 
 spaceman_logfile="${logsdir}/spaceman.log" # location of the spaceman log file
 
@@ -180,11 +180,12 @@ spaceman_logfile="${logsdir}/spaceman.log" # location of the spaceman log file
 anchor=audiobooks,td_tv1.bin,td_movies.bin # anchor files, use commas to separate (a directory is also a file)
 dir="/mnt/unionfs"                         # location of anchor files
 sapps="plex emby jellyfin"                 # docker service apps, separate with spaces.
-wanchlog="${logsdir}/wanch.log"        # logfile
+wanchlog="${logsdir}/wanch.log"            # logfile
 
 #________for WANCH PLUS.sh
 
 sysapps="rclone_vfs mergerfs munter" # system services, separate with spaces.
+wanchcommands="sudo mount -a"              # Commands to be executed when anchor is not found
 
 ########################
 # APP TRANSFER or BACKUP
