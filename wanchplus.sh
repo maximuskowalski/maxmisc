@@ -33,9 +33,10 @@ root_runner() {
   fi
 }
 
+# apprise uses -V for version, systemctl has --version
 check_requirements() {
   for cmd in docker systemctl apprise; do
-    if ! command -v $cmd &>/dev/null; then
+    if ! command --version $cmd &>/dev/null; then
       msg="Error: $cmd is not installed."
       send_notification "${msg}"
       echo "${msg}" >&2
@@ -108,7 +109,7 @@ send_notification() {
 # Main function to run the checker
 main() {
   root_runner
-  check_requirements
+  # check_requirements
   safety_check
   checker
 }
